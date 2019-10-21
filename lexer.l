@@ -17,22 +17,8 @@ void count(void);
 
 %%
 	
-{identifier} {
-	yylval.name = strdup(yytext); /*Returns a pointer to a null-terminated byte string, which is a 
-								 duplicate of the string pointed to by str1. The returned pointer must 
-								 be passed to free to avoid a memory leak. */
-	return ID;
-}
 
-{number} {
-	yylval.value = atoi(yytext); 
-	return NUMBER;
-}
 
-{whitespace} {/* skip */}
-
-[ \t\n]		{ count(); }
-.			{fprintf(stderr, "MISS MATCH: %c\n", yytext[0]);}
 
 "/*"			{ comment(); }
 "//"[^\n]*      { /* comment */ }
@@ -67,6 +53,23 @@ bool 			{ count(); return(BOOL); }
 "/"				{ count(); return('/'); }
 "<"				{ count(); return('<'); }
 ">"				{ count(); return('>'); }
+
+
+{number} {
+	yylval.value = atoi(yytext); 
+	return NUMBER;
+}
+
+{whitespace} {/* skip */}
+
+[ \t\n]		{ count(); }
+.			{fprintf(stderr, "MISS MATCH: %c\n", yytext[0]);}
+{identifier} {
+	yylval.name = strdup(yytext); /*Returns a pointer to a null-terminated byte string, which is a 
+								 duplicate of the string pointed to by str1. The returned pointer must 
+								 be passed to free to avoid a memory leak. */
+	return ID;
+}
 
 %%
 
