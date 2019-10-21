@@ -1,75 +1,72 @@
-D			[0-9]
-L			[a-zA-Z_]
+digit       [0-9]
+number      {digit}+
+letter      [a-zA-Z]
+identifier  (_|{letter})({letter}|{digit}|_)*
+newline     \n
+tab			\t
+string      "((\\")|(\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
+whitespace  [ ]
 
 %{
+
 #include <stdio.h>
 #include "y.tab.h"
 void count(void);
+
 %}
+
 %%
-[0-9]+          	return NUMBER;
+	
+{identifier} {
+	yylval.name = strdup(yytext); /*Returns a pointer to a null-terminated byte string, which is a 
+								 duplicate of the string pointed to by str1. The returned pointer must 
+								 be passed to free to avoid a memory leak. */
+	return ID;
+}
+
+{number} {
+	yylval.value = atoi(yytext); 
+	return NUMBER;
+}
+
+{whitespace} {/* skip */}
+
+[ \t\n]		{ count(); }
+.			{fprintf(stderr, "MISS MATCH: %c\n", yytext[0]);}
+
 "/*"			{ comment(); }
-"//"[^\n]*      	{ /* consume //-comment */ }
-"#"[^\n]*       	{ /* consume //-comment */ }
-"_Bool"			{ count(); return(BOOL); }
+"//"[^\n]*      { /* comment */ }
+"#"[^\n]*       { /* comment */ }
+bool 			{ count(); return(BOOL); }
 "else"			{ count(); return(ELSE); }
 "if"			{ count(); return(IF); }
 "int"			{ count(); return(INT); }
 "return"		{ count(); return(RETURN); }
 "void"			{ count(); return(VOID); }
 "while"			{ count(); return(WHILE); }
-
-{L}({L}|{D})*		{ count(); return(check_type()); }
-
 ">>"			{ count(); return(RIGHT_OP); }
 "<<"			{ count(); return(LEFT_OP); }
-
 "&&"			{ count(); return(AND_OP); }
-
 "||"			{ count(); return(OR_OP); }
-
 "<="			{ count(); return(LE_OP); }
-
 ">="			{ count(); return(GE_OP); }
-
 "=="			{ count(); return(EQ_OP); }
-
 "!="			{ count(); return(NE_OP); }
-
-";"			{ count(); return(';'); }
-
+";"				{ count(); return(';'); }
 ("{"|"<%")		{ count(); return('{'); }
-
 ("}"|"%>")		{ count(); return('}'); }
-
-","			{ count(); return(','); }
-
-
-"="			{ count(); return('='); }
-
-"("			{ count(); return('('); }
-
-")"			{ count(); return(')'); }
-
+","				{ count(); return(','); }
+"="				{ count(); return('='); }
+"("				{ count(); return('('); }
+")"				{ count(); return(')'); }
 ("["|"<:")		{ count(); return('['); }
-
 ("]"|":>")		{ count(); return(']'); }
-
-"-"			{ count(); return('-'); }
-
-"+"			{ count(); return('+'); }
-
-"*"			{ count(); return('*'); }
-
-"/"			{ count(); return('/'); }
-
-"<"			{ count(); return('<'); }
-
-">"			{ count(); return('>'); }
-
-[ \t\v\n\f]		{ count(); }
-
-.			{ /* Add code to complain about unmatched characters */ }
+"-"				{ count(); return('-'); }
+"+"				{ count(); return('+'); }
+"*"				{ count(); return('*'); }
+"/"				{ count(); return('/'); }
+"<"				{ count(); return('<'); }
+">"				{ count(); return('>'); }
 
 %%
 
@@ -80,7 +77,6 @@ int yywrap(void)
 
 void comment(void)
 {
-
 	char c, prev = 0;
 	while ((c = input()) != 0)      /* (EOF maps to 0) */
 	{
@@ -89,16 +85,12 @@ void comment(void)
 		prev = c;
 	}
 	error("unterminated comment");
-
 }
-
 
 int column = 0;
 
 void count(void)
-
 {
-
 	int i;
 	for (i = 0; yytext[i] != '\0'; i++)
 		if (yytext[i] == '\n')
@@ -108,19 +100,6 @@ void count(void)
 		else
 			column++;
 	ECHO;
-
 }
 
 
-static int check_type(void)
-{
-    switch (sym_type(yytext))
-    {
-    case TYPEDEF_NAME:                /* previously defined */
-        return TYPEDEF_NAME;
-    case ENUMERATION_CONSTANT:        /* previously defined */
-        return ENUMERATION_CONSTANT;
-    default:                          /* includes undefined */
-        return IDENTIFIER;
-    }
-}
