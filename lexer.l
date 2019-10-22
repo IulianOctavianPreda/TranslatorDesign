@@ -47,21 +47,21 @@ void count(void);
 ">="			{ count(); return(GE_OP); }
 "=="			{ count(); return(EQ_OP); }
 "!="			{ count(); return(NE_OP); }
-";"				{ count(); return(';'); }
-("{"|"<%")		{ count(); return('{'); }
-("}"|"%>")		{ count(); return('}'); }
-","				{ count(); return(','); }
-"="				{ count(); return('='); }
-"("				{ count(); return('('); }
-")"				{ count(); return(')'); }
-("["|"<:")		{ count(); return('['); }
-("]"|":>")		{ count(); return(']'); }
-"-"				{ count(); return('-'); }
-"+"				{ count(); return('+'); }
-"*"				{ count(); return('*'); }
-"/"				{ count(); return('/'); }
-"<"				{ count(); return('<'); }
-">"				{ count(); return('>'); }
+";"				{ count(); return(SEMICOL); }
+("{"|"<%")		{ count(); return(LB); }
+("}"|"%>")		{ count(); return(RB); }
+","				{ count(); return(COL); }
+"="				{ count(); return(EQ); }
+"("				{ count(); return(LRB); }
+")"				{ count(); return(RRB); }
+("["|"<:")		{ count(); return(LSB); }
+("]"|":>")		{ count(); return(RSB); }
+"-"				{ count(); return(MINUS); }
+"+"				{ count(); return(PLUS); }
+"*"				{ count(); return(TIMES); }
+"/"				{ count(); return(DIVIDE); }
+"<"				{ count(); return(GL); }
+">"				{ count(); return(GR); }
 .				{ fprintf(stderr, "MISS MATCH: %c\n", yytext[0]); }
 
 
@@ -78,7 +78,7 @@ void count(void);
 	yylval.name = strdup(yytext); /*Returns a pointer to a null-terminated byte string, which is a 
 								 duplicate of the string pointed to by str1. The returned pointer must 
 								 be passed to free to avoid a memory leak. */
-	return ID;
+	return IDENTIFIER;
 }
 
 %%
