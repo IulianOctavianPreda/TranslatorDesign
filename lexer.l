@@ -17,19 +17,28 @@ void count(void);
 
 %%
 	
+	/* Reserved keywords*/
 
+"int"			{ count(); return(INT); }
+"bool" 			{ count(); return(BOOL); }
+"void"			{ count(); return(VOID); }
+"true"			{ count(); return(TRUE); }
+"false"			{ count(); return(FALSE); }
+"if"			{ count(); return(IF); }
+"else"			{ count(); return(ELSE); }
+"while"			{ count(); return(WHILE); }
+"return"		{ count(); return(RETURN); }
+"cin"			{ count(); return(CIN); }
+"cout"			{ count(); return(COUT); }
 
+  /* comments */
 
 "/*"			{ comment(); }
 "//"[^\n]*      { /* comment */ }
 "#"[^\n]*       { /* comment */ }
-bool 			{ count(); return(BOOL); }
-"else"			{ count(); return(ELSE); }
-"if"			{ count(); return(IF); }
-"int"			{ count(); return(INT); }
-"return"		{ count(); return(RETURN); }
-"void"			{ count(); return(VOID); }
-"while"			{ count(); return(WHILE); }
+
+  /* special characters */
+
 ">>"			{ count(); return(RIGHT_OP); }
 "<<"			{ count(); return(LEFT_OP); }
 "&&"			{ count(); return(AND_OP); }
@@ -53,6 +62,7 @@ bool 			{ count(); return(BOOL); }
 "/"				{ count(); return('/'); }
 "<"				{ count(); return('<'); }
 ">"				{ count(); return('>'); }
+.				{ fprintf(stderr, "MISS MATCH: %c\n", yytext[0]); }
 
 
 {number} {
@@ -62,8 +72,8 @@ bool 			{ count(); return(BOOL); }
 
 {whitespace} {/* skip */}
 
-[ \t\n]		{ count(); }
-.			{fprintf(stderr, "MISS MATCH: %c\n", yytext[0]);}
+[\t\n]		{ count(); }
+
 {identifier} {
 	yylval.name = strdup(yytext); /*Returns a pointer to a null-terminated byte string, which is a 
 								 duplicate of the string pointed to by str1. The returned pointer must 
