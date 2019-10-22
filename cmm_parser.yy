@@ -74,6 +74,8 @@
 %token               DIVIDE
 %token               GL 
 %token               GR 
+%token				 IDENTIFIER 
+%token				 STRINGLITERAL 
 
 %locations
 
@@ -84,7 +86,110 @@
 %left '+' '-'
 %left '*' '/'
 %%
-// grammar
+/*grammar*/
+program
+ : program varDecl
+ | program fnDecl
+ | /* empty */
+ ;
+varDecl
+ : type id ';'
+ | type id '[' INT ']' ';'
+ ;
+type
+ : INT
+ | BOOL
+ | VOID
+ ;
+fnDecl
+ : type id parameters block
+ ;
+parameters
+ : '(' ')'
+ | '(' formalsList ')'
+ ;
+formalsList
+ : formalDecl
+ | formalsList ',' formalDecl
+ ;
+formalDecl
+ : type id
+ ;
+block
+ : '{' declList stmtList '}'
+ ;
+declList
+ : declList varDecl
+ | /* empty */
+ ;
+stmtList
+ : stmtList stmt
+ | /* empty */
+ ;
+stmt
+ : CIN READ id ';'
+ | CIN READ id '[' exp ']' ';'
+ | COUT WRITE exp ';'
+ | subscriptExpr '=' exp ';'
+ | id '=' exp ';'
+ | IF '(' exp ')' block
+ | IF '(' exp ')' block ELSE block
+ | WHILE '(' exp ')' block
+ | RETURN exp ';'
+ | RETURN ';'
+ | fnCallStmt ';'
+ ;
+exp
+ : exp '+' exp
+ | exp '-' exp
+ | exp '*' exp
+ | exp '/' exp
+ | '!' exp
+ | exp ANDAND exp
+ | exp OROR exp
+ | exp EQEQ exp
+ | exp NOTEQ exp
+ | exp '<' exp
+ | exp '>' exp
+ | exp LESSEQ exp
+ | exp GREATEREQ exp
+ | '-' atom
+ | atom
+ ;
+atom
+ : INT
+ | STRINGLITERAL
+ | TRUE
+ | FALSE
+ | '(' exp ')'
+ | fnCallExpr
+ | subscriptExpr
+ | id
+ ;
+ 
+fnCallExpr
+ : id '(' ')'
+ | id '(' actualList ')'
+ ;
+ 
+fnCallStmt
+ : id '(' ')'
+ | id '(' actualList ')'
+ ;
+ 
+actualList
+ : exp
+ | actualList ',' exp
+ ;
+ 
+subscriptExpr
+ : id '[' exp ']'
+ ;
+id
+ : IDENTIFIER
+ ;
+
+
 %%
 
 
