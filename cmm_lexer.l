@@ -101,6 +101,11 @@ using token = CMM::CMM_Parser::token;
 
 {whitespace}   { /* skip */ }
 
+{word}         {
+	          yylval->build< std::string >( yytext );
+	          return( token::STRINGLITERAL );
+               }
+
 {identifier}   {
                   yylval->build< std::string >( yytext );
                   return( token::IDENTIFIER );
