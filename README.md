@@ -12,10 +12,10 @@ When updating main.cpp use:
 # Instructions
 
 To build the lexer code use  
-`flex ./lexer.l`
+`flex ./src/scanner/lexer.l`
 
 To build the executable  
-`GCC ./lex.yy.c -lfl`
+`GCC ./src/parser/lex.yy.c -lfl`
 
 To use the executable  
 `./a.out on linux`  

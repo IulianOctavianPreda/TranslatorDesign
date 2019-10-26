@@ -3,7 +3,7 @@
 %debug 
 %defines 
 %define api.namespace {CMM}
-%define parser_class_name {CMM_Parser}
+%define api.parser.class {CMM_Parser}
 
 %code requires{
    namespace CMM {
