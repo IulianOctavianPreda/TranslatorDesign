@@ -9,5 +9,4 @@ void CMM::CMM_Driver::parse(std::istream &stream) {
   if (!parser->parse()) {
     std::cerr << "Parse failed!!\n";
   }
-  return;
 }

@@ -1,8 +1,8 @@
-/// Tokens.
-struct token
-{
-    enum yytokentype
+    struct token
     {
+      enum yytokentype
+      {
+        END = 0,
         INT = 258,
         BOOL = 259,
         VOID = 260,
@@ -38,6 +38,8 @@ struct token
         GL = 290,
         GR = 291,
         IDENTIFIER = 292,
-        STRINGLITERAL = 293
+        NUMBER = 293,
+        NEWLINE = 294,
+        STRINGLITERAL = 295
+      };
     };
-};

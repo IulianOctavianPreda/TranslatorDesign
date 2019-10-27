@@ -29,7 +29,7 @@ class CMM_Scanner : public yyFlexLexer {
                     CMM::CMM_Parser::location_type *location);
 
  private:
-  CMM::CMM_Parser::semantic_type *yylval = nullptr;
+  std::unique_ptr<CMM::CMM_Parser::semantic_type> yylval;
 };
 
 } /* end namespace CMM */

@@ -17,7 +17,7 @@ class CMM_Driver {
  private:
   void parse(std::istream &stream);
   std::unique_ptr<CMM::CMM_Parser> parser;
-  std::unique_ptr<CMM_Scanner> scanner;
+  std::unique_ptr<CMM::CMM_Scanner> scanner;
 };
 
 } /* end namespace CMM */
