@@ -1,7 +1,7 @@
 #include "cmm_input_parser.hpp"
 
 void CMM::CMM_Input_Parser::parse_input(
-    const char *const filename,
+    const std::string filename,
     std::function<void(std::istream &stream)> scan) {
   assert(filename != nullptr);
   std::ifstream in_file(filename);
