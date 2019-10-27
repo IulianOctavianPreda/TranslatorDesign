@@ -2,11 +2,19 @@
 #define __CMMSCANNER_HPP__ 1
 
 #if !defined(yyFlexLexerOnce)
-#include <FlexLexer.h>
+  #include <FlexLexer.h>
 #endif
 
-#include "cmm_parser.tab.hh"
-#include "location.hh"
+#if __has_include("myinclude.h") && __has_include(<stdint.h>)
+  #include "../parser/cmm_parser.tab.hh"
+  #include "../parser/location.hh"
+#endif
+
+#if !__has_include("myinclude.h") || !__has_include(<stdint.h>)
+  #include "../parser/cmm_parser.tab.hh"
+  #include "../parser/location.hh"
+#endif
+
 
 namespace CMM {
 
