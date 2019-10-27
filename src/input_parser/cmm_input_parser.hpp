@@ -1,8 +1,8 @@
 #include <cassert>
 #include <fstream>
 #include <functional>
-#include <string>
 #include <istream>
+#include <string>
 
 namespace CMM {
 class CMM_Input_Parser {

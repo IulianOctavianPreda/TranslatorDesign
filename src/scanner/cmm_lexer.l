@@ -11,6 +11,7 @@ whitespace  [ ]
 %{
 /* C++ string header, for string ops below */
 #include <string>
+#include <memory>
 
 /* Implementation of yyFlexScanner */ 
 #include "cmm_scanner.hpp"
@@ -38,7 +39,7 @@ using token = CMM::CMM_Parser::token;
 
 %{          
    /** Code executed at the beginning of yylex **/
-   yylval = lval;
+   yylval = std::unique_ptr<CMM::CMM_Parser::semantic_type>(lval);
 %}
         
     /* Reserved keywords*/

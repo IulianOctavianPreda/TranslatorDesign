@@ -2,8 +2,8 @@
 #define __CMMDRIVER_HPP__ 1
 
 #include <cstddef>
-#include <string>
 #include <memory>
+#include <string>
 
 #include "../parser/cmm_parser.tab.hh"
 #include "../scanner/cmm_scanner.hpp"
@@ -12,10 +12,10 @@ namespace CMM {
 
 class CMM_Driver {
  public:
-  CMM_Driver();
+  CMM_Driver() = default;
+  void parse(std::istream &stream);
 
  private:
-  void parse(std::istream &stream);
   std::unique_ptr<CMM::CMM_Parser> parser;
   std::unique_ptr<CMM::CMM_Scanner> scanner;
 };
