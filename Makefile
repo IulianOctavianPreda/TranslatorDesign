@@ -2,7 +2,7 @@ CXX = g++
 EXE = C--
 CXXDEBUG = -g -Wall
 CXXSTD = -std=c++14
-CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
+CXXFLAGS = $(CXXDEBUG) $(CXXSTD)
 
 SOURCEPATH = ./src
 BUILDPATH = ./build
@@ -14,26 +14,25 @@ FILES = $(addsuffix .cpp, $(CPPOBJ))
 
 OBJS  = $(addsuffix .o, $(CPPOBJ))
 
-# CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
-# 				 cmm_parser.tab.cc cmm_parser.tab.hh \
-# 				 location.hh position.hh \
-# 			    stack.hh cmm_parser.output parser.o \
-# 				 lexer.o cmm_lexer.yy.cc $(EXE)\
+CLEANLIST = $(OBJS) \
+			$(SOURCEPATH)/parser/cmm_parser.tab.cc $(SOURCEPATH)/parser/cmm_parser.tab.hh \
+			$(SOURCEPATH)/parser/location.hh $(SOURCEPATH)/parser/position.hh \
+			$(SOURCEPATH)/parser/stack.hh $(SOURCEPATH)/parser/cmm_parser.output $(BUILDPATH)/parser.o \
+			$(BUILDPATH)/lexer.o $(SOURCEPATH)/scanner/cmm_lexer.yy.cc\
 
-all: 
-	$(FILES)
+all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
-
+	$(MAKE) clean
 
 parser: $(SOURCEPATH)/parser/cmm_parser.yy
-	bison -d -v $(SOURCEPATH)/parser/cmm_parser.yy -o $(BUILDPATH)/cmm_parser.tab.cc
-	$(CXX) $(CXXFLAGS) -c -o $(BUILDPATH)/parser.o $(BUILDPATH)/cmm_parser.tab.cc
+	bison -d -v $(SOURCEPATH)/parser/cmm_parser.yy -o $(SOURCEPATH)/parser/cmm_parser.tab.cc
+	$(CXX) $(CXXFLAGS) -c -o $(BUILDPATH)/parser.o $(SOURCEPATH)/parser/cmm_parser.tab.cc
 
 lexer: $(SOURCEPATH)/scanner/cmm_lexer.l
-	flex -o $(BUILDPATH)/cmm_lexer.yy.cc $(SOURCEPATH)/scanner/cmm_lexer.l $<
-	$(CXX)  $(CXXFLAGS) -c $(BUILDPATH)/cmm_lexer.yy.cc -o $(BUILDPATH)/lexer.o
+	flex -o $(SOURCEPATH)/scanner/cmm_lexer.yy.cc $(SOURCEPATH)/scanner/cmm_lexer.l
+	$(CXX)  $(CXXFLAGS) -c $(SOURCEPATH)/scanner/cmm_lexer.yy.cc -o $(BUILDPATH)/lexer.o
 
-# clean:
-# 	rm -rf $(CLEANLIST)
+clean:
+	rm -rf $(CLEANLIST)

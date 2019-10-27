@@ -1,0 +1,17 @@
+CXX = g++
+CXXDEBUG = -g -Wall
+CXXSTD = -std=c++14
+CXXFLAGS = $(CXXDEBUG) $(CXXSTD)
+
+SOURCEPATH = ./src
+BUILDPATH = ./build
+
+SOBJ = lexer
+
+all:
+	$(MAKE) $(SOBJ)
+	# $(CXX) $(CXXFLAGS) ./build/lexer.o $(LIBS)
+
+lexer: $(SOURCEPATH)/scanner/cmm_lexer.l
+	flex -o ./cmm_lexer.yy.cc $(SOURCEPATH)/scanner/cmm_lexer.l 
+	$(CXX)  $(CXXFLAGS) ./cmm_lexer.yy.cc -o $(BUILDPATH)/lexer.o -lfl
