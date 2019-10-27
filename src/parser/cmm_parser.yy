@@ -31,13 +31,13 @@
    #include <fstream>
    
    /* include for all driver functions */
-   #include "cmm_driver.hpp"
+   #include "../driver/cmm_driver.hpp"
 
 #undef yylex
 #define yylex scanner.yylex
 }
 
-%define api.value.type variant
+%define api.value.type variant // values will be handled as a whole in the lexer https://www.gnu.org/software/bison/manual/html_node/_0025define-Summary.html
 %define parse.assert
 
 %token               INT
@@ -74,8 +74,11 @@
 %token               DIVIDE
 %token               GL 
 %token               GR 
-%token				 IDENTIFIER 
-%token				 STRINGLITERAL 
+%token				   IDENTIFIER 
+%token				   NUMBER 
+%token				   NEWLINE 
+%token				   STRINGLITERAL 
+%token               END    0     "end of file"
 
 %locations
 
@@ -188,8 +191,6 @@ subscriptExpr
 id
  : IDENTIFIER
  ;
-
-
 %%
 
 

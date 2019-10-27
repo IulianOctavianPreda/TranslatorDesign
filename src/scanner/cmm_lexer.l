@@ -3,9 +3,9 @@ number      {digit}+
 letter      [a-zA-Z]
 word        {letter}+
 identifier  (_|{letter})({letter}|{digit}|_)*
-newline     \n
-tab			\t
-string      "((\\")|(\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
+newline     [\n]
+tab         [\t]
+string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
 whitespace  [ ]
 
 %{
@@ -40,94 +40,81 @@ using token = CMM::CMM_Parser::token;
    /** Code executed at the beginning of yylex **/
    yylval = lval;
 %}
-		
-	/* Reserved keywords*/
+        
+    /* Reserved keywords*/
 
-"int"			   { return(token::INT); }
-"bool" 			{ return(token::BOOL); }
-"void"			{ return(token::VOID); }
-"true"			{ return(token::TRUE); }
-"false"			{ return(token::FALSE); }
-"if"			   { return(token::IF); }
-"else"			{ return(token::ELSE); }
-"while"			{ return(token::WHILE); }
-"return"		   { return(token::RETURN); }
-"cin"			   { return(token::CIN); }
-"cout"			{ return(token::COUT); }
+int            { return(token::INT); }
+bool           { return(token::BOOL); }
+void           { return(token::VOID); }
+true           { return(token::TRUE); }
+false          { return(token::FALSE); }
+if             { return(token::IF); }
+else           { return(token::ELSE); }
+while          { return(token::WHILE); }
+return         { return(token::RETURN); }
+cin            { return(token::CIN); }
+cout           { return(token::COUT); }
 
 
   /* comments */
 
-"/*"			    { comment(); }
-"//"[^\n]*      { /* comment */ }
-"#"[^\n]*       { /* comment */ }
+^\/\/.*\n$     { /* comment */ }
+^\#.*\n$       { /* comment */ }
 
   /* special characters */
 
-">>"			   { return(token::RIGHT_OP); }
-"<<"			   { return(token::LEFT_OP); }
-"&&"			   { return(token::AND_OP); }
-"||"			   { return(token::OR_OP); }
-"<="			   { return(token::LE_OP); }
-">="			   { return(token::GE_OP); }
-"=="			   { return(token::EQ_OP); }
-"!="			   { return(token::NE_OP); }
-";"				{ return(token::SEMICOL); }
-("{"|"<%")		{ return(token::LB); }
-("}"|"%>")		{ return(token::RB); }
-","				{ return(token::COL); }
-"="				{ return(token::EQ); }
-"("				{ return(token::LRB); }
-")"				{ return(token::RRB); }
-("["|"<:")		{ return(token::LSB); }
-("]"|":>")		{ return(token::RSB); }
-"-"				{ return(token::MINUS); }
-"+"				{ return(token::PLUS); }
-"*"				{ return(token::TIMES); }
-"/"				{ return(token::DIVIDE); }
-"<"				{ return(token::GL); }
-">"				{ return(token::GR); }
+\>\>            { return(token::RIGHT_OP); }
+\<\<            { return(token::LEFT_OP); }
+\&\&            { return(token::AND_OP); }
+\|\|            { return(token::OR_OP); }
+\<\=            { return(token::LE_OP); }
+\>\=            { return(token::GE_OP); }
+\=\=            { return(token::EQ_OP); }
+\!\=            { return(token::NE_OP); }
+\;              { return(token::SEMICOL); }
+\{              { return(token::LB); }
+\}              { return(token::RB); }
+\,              { return(token::COL); }
+\=              { return(token::EQ); }
+\(              { return(token::LRB); }
+\)              { return(token::RRB); }
+\[              { return(token::LSB); }
+\]              { return(token::RSB); }
+\-              { return(token::MINUS); }
+\+              { return(token::PLUS); }
+\*              { return(token::TIMES); }
+\/              { return(token::DIVIDE); }
+\<              { return(token::GL); }
+\>              { return(token::GR); }
 
-\n		         {
+[\n]            {
+                  // Update line number
+                  loc->lines();
+                  return( token::NEWLINE );
+                }
+[\t\n]          {
                   // Update line number
                   loc->lines();
                   return( token::NEWLINE );
                }
 
 {number}       {
-                  yylval.value = stoi(yytext);
+                  yylval->build<int>(std::stoi(yytext));
                   return( token::NUMBER ); 
                }
 
 {whitespace}   { /* skip */ }
 
 {word}         {
-	          yylval->build< std::string >( yytext );
-	          return( token::STRINGLITERAL );
+                   yylval->build<std::string>(yytext);
+                   return( token::STRINGLITERAL );
                }
 
 {identifier}   {
-                  yylval->build< std::string >( yytext );
+                  yylval->build<std::string>(yytext);
                   return( token::IDENTIFIER );
                }
 
-.              { charMissmatch(); }
+.              { /* skip */ }
 
 %%
-
-
-void comment(void)
-{
-	char c, prev = 0;
-	while ((c = input()) != 0)      /* (EOF maps to 0) */
-	{
-		if (c == '/' && prev == '*')
-			return;
-		prev = c;
-	}
-	error("unterminated comment");
-}
-
-void charMissmatch(){
-   cout << "MISS MATCH:" << yytext[0] << endl;
-}
