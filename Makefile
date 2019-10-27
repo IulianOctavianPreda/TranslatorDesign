@@ -23,7 +23,7 @@ CLEANLIST = $(OBJS) \
 all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(BUILDPATH)/$(EXE) $(OBJS) $(BUILDPATH)/parser.o $(BUILDPATH)/lexer.o $(LIBS)
 	$(MAKE) clean
 
 parser: $(SOURCEPATH)/parser/cmm_parser.yy
