@@ -100,26 +100,38 @@ cout           { return(COUT); }
 
 %%
 
-int main(){
-	int tok;
- 	while(tok = yylex()) {
- 		printf("%d ",tok);
-	}
-	return 0;
+void action(){
+    int token; 
+    while(token = yylex()) {
+ 		  printf("%d ",token);
+	  }
 }
 
 void readFromFile(char* fileName){
   // set as input stream the file opened
   if(!(yyin = fopen(fileName, "r"))) {
-      perror(argv[i]);
-      return (1);
+      perror(fileName);
+      return;
   }
   action();
 }
 
-void action(){
-    int token; 
-    while(tok = yylex()) {
- 		  printf("%d ",token);
-	  }
+void readMultipleFiles(int argc, char** argv){
+  int i;
+  for(i = 1; i < argc; i++) {
+    FILE *f = fopen(argv[i], "r");
+
+    if(!f) {
+      perror(argv[i]);
+      return;
+    }
+    yyrestart(f);
+    action();
+    fclose(f);
+ }
+}
+
+int main(int argc, char** argv){
+  action();
+	return 0;
 }
