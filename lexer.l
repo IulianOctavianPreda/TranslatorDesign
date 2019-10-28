@@ -1,118 +1,109 @@
 digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
+word        {letter}+
 identifier  (_|{letter})({letter}|{digit}|_)*
-newline     \n
-tab			\t
-string      "((\\")|(\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
+newline     [\n]
+tab         [\t]
+string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
 whitespace  [ ]
 
 %{
+/* C++ string header, for string ops below */
+#include <iostream>
+#include "mock_tokens.hh"
 
-#include <stdio.h>
-#include "y.tab.h"
-void count(void);
+/* define yyterminate as this instead of NULL */
+#define yyterminate() return( token::END )
 
 %}
+%option debug
+%option nodefault
+%option noyywrap
+%option c++
 
 %%
-	
-	/* Reserved keywords*/
 
-"int"			{ count(); return(INT); }
-"bool" 			{ count(); return(BOOL); }
-"void"			{ count(); return(VOID); }
-"true"			{ count(); return(TRUE); }
-"false"			{ count(); return(FALSE); }
-"if"			{ count(); return(IF); }
-"else"			{ count(); return(ELSE); }
-"while"			{ count(); return(WHILE); }
-"return"		{ count(); return(RETURN); }
-"cin"			{ count(); return(CIN); }
-"cout"			{ count(); return(COUT); }
+%{          
+   int yylval;
+%}
+        
+    /* Reserved keywords*/
+
+int            { return(token::INT); }
+bool           { return(token::BOOL); }
+void           { return(token::VOID); }
+true           { return(token::TRUE); }
+false          { return(token::FALSE); }
+if             { return(token::IF); }
+else           { return(token::ELSE); }
+while          { return(token::WHILE); }
+return         { return(token::RETURN); }
+cin            { return(token::CIN); }
+cout           { return(token::COUT); }
+
 
   /* comments */
 
-"/*"			{ comment(); }
-"//"[^\n]*      { /* comment */ }
-"#"[^\n]*       { /* comment */ }
+^\/\/.*\n$     { /* comment */ }
+^\#.*\n$       { /* comment */ }
 
   /* special characters */
 
-">>"			{ count(); return(RIGHT_OP); }
-"<<"			{ count(); return(LEFT_OP); }
-"&&"			{ count(); return(AND_OP); }
-"||"			{ count(); return(OR_OP); }
-"<="			{ count(); return(LE_OP); }
-">="			{ count(); return(GE_OP); }
-"=="			{ count(); return(EQ_OP); }
-"!="			{ count(); return(NE_OP); }
-";"				{ count(); return(';'); }
-("{"|"<%")		{ count(); return('{'); }
-("}"|"%>")		{ count(); return('}'); }
-","				{ count(); return(','); }
-"="				{ count(); return('='); }
-"("				{ count(); return('('); }
-")"				{ count(); return(')'); }
-("["|"<:")		{ count(); return('['); }
-("]"|":>")		{ count(); return(']'); }
-"-"				{ count(); return('-'); }
-"+"				{ count(); return('+'); }
-"*"				{ count(); return('*'); }
-"/"				{ count(); return('/'); }
-"<"				{ count(); return('<'); }
-">"				{ count(); return('>'); }
-.				{ fprintf(stderr, "MISS MATCH: %c\n", yytext[0]); }
+\>\>            { return(token::RIGHT_OP); }
+\<\<            { return(token::LEFT_OP); }
+\&\&            { return(token::AND_OP); }
+\|\|            { return(token::OR_OP); }
+\<\=            { return(token::LE_OP); }
+\>\=            { return(token::GE_OP); }
+\=\=            { return(token::EQ_OP); }
+\!\=            { return(token::NE_OP); }
+\;              { return(token::SEMICOL); }
+\{              { return(token::LB); }
+\}              { return(token::RB); }
+\,              { return(token::COL); }
+\=              { return(token::EQ); }
+\(              { return(token::LRB); }
+\)              { return(token::RRB); }
+\[              { return(token::LSB); }
+\]              { return(token::RSB); }
+\-              { return(token::MINUS); }
+\+              { return(token::PLUS); }
+\*              { return(token::TIMES); }
+\/              { return(token::DIVIDE); }
+\<              { return(token::GL); }
+\>              { return(token::GR); }
 
+[\n]            {
+                  return( token::NEWLINE );
+                }
+[\t\n]          {
+                  return( token::NEWLINE );
+               }
 
-{number} {
-	yylval.value = atoi(yytext); 
-	return NUMBER;
-}
+{number}       {
+                  return( token::NUMBER ); 
+               }
 
-{whitespace} {/* skip */}
+{whitespace}   { /* skip */ }
 
-[\t\n]		{ count(); }
+{word}         {
+                   return( token::STRINGLITERAL );
+               }
 
-{identifier} {
-	yylval.name = strdup(yytext); /*Returns a pointer to a null-terminated byte string, which is a 
-								 duplicate of the string pointed to by str1. The returned pointer must 
-								 be passed to free to avoid a memory leak. */
-	return ID;
-}
+{identifier}   {
+                  return( token::IDENTIFIER );
+               }
+
+.              { /* skip */ }
 
 %%
 
-int yywrap(void)
-{
-	return 1;
-}
-
-void comment(void)
-{
-	char c, prev = 0;
-	while ((c = input()) != 0)      /* (EOF maps to 0) */
-	{
-		if (c == '/' && prev == '*')
-			return;
-		prev = c;
+int main(){
+	FlexLexer* lexer = new yyFlexLexer;
+	int tok;
+ 	while(tok = lexer->yylex()) {
+ 		std::cout << tok;
 	}
-	error("unterminated comment");
+	return 0;
 }
-
-int column = 0;
-
-void count(void)
-{
-	int i;
-	for (i = 0; yytext[i] != '\0'; i++)
-		if (yytext[i] == '\n')
-			column = 0;
-		else if (yytext[i] == '\t')
-			column += 8 - (column % 8);
-		else
-			column++;
-	ECHO;
-}
-
-
