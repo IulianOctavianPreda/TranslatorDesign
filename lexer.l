@@ -9,18 +9,16 @@ string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0
 whitespace  [ ]
 
 %{
-/* C++ string header, for string ops below */
-#include <iostream>
+/* C string header, for string ops below */
+#include <stdlib.h>
 #include "mock_tokens.hh"
 
 /* define yyterminate as this instead of NULL */
-#define yyterminate() return( token::END )
+#define yyterminate() return( END )
 
 %}
-%option debug
 %option nodefault
 %option noyywrap
-%option c++
 
 %%
 
@@ -30,17 +28,17 @@ whitespace  [ ]
         
     /* Reserved keywords*/
 
-int            { return(token::INT); }
-bool           { return(token::BOOL); }
-void           { return(token::VOID); }
-true           { return(token::TRUE); }
-false          { return(token::FALSE); }
-if             { return(token::IF); }
-else           { return(token::ELSE); }
-while          { return(token::WHILE); }
-return         { return(token::RETURN); }
-cin            { return(token::CIN); }
-cout           { return(token::COUT); }
+int            { return(INT); }
+bool           { return(BOOL); }
+void           { return(VOID); }
+true           { return(TRUE); }
+false          { return(FALSE); }
+if             { return(IF); }
+else           { return(ELSE); }
+while          { return(WHILE); }
+return         { return(RETURN); }
+cin            { return(CIN); }
+cout           { return(COUT); }
 
 
   /* comments */
@@ -50,60 +48,61 @@ cout           { return(token::COUT); }
 
   /* special characters */
 
-\>\>            { return(token::RIGHT_OP); }
-\<\<            { return(token::LEFT_OP); }
-\&\&            { return(token::AND_OP); }
-\|\|            { return(token::OR_OP); }
-\<\=            { return(token::LE_OP); }
-\>\=            { return(token::GE_OP); }
-\=\=            { return(token::EQ_OP); }
-\!\=            { return(token::NE_OP); }
-\;              { return(token::SEMICOL); }
-\{              { return(token::LB); }
-\}              { return(token::RB); }
-\,              { return(token::COL); }
-\=              { return(token::EQ); }
-\(              { return(token::LRB); }
-\)              { return(token::RRB); }
-\[              { return(token::LSB); }
-\]              { return(token::RSB); }
-\-              { return(token::MINUS); }
-\+              { return(token::PLUS); }
-\*              { return(token::TIMES); }
-\/              { return(token::DIVIDE); }
-\<              { return(token::GL); }
-\>              { return(token::GR); }
+\>\>            { return(RIGHT_OP); }
+\<\<            { return(LEFT_OP); }
+\&\&            { return(AND_OP); }
+\|\|            { return(OR_OP); }
+\<\=            { return(LE_OP); }
+\>\=            { return(GE_OP); }
+\=\=            { return(EQ_OP); }
+\!\=            { return(NE_OP); }
+\;              { return(SEMICOL); }
+\{              { return(LB); }
+\}              { return(RB); }
+\,              { return(COL); }
+\=              { return(EQ); }
+\(              { return(LRB); }
+\)              { return(RRB); }
+\[              { return(LSB); }
+\]              { return(RSB); }
+\-              { return(MINUS); }
+\+              { return(PLUS); }
+\*              { return(TIMES); }
+\/              { return(DIVIDE); }
+\<              { return(GL); }
+\>              { return(GR); }
 
 [\n]            {
-                  return( token::NEWLINE );
+                  return( NEWLINE );
                 }
 [\t\n]          {
-                  return( token::NEWLINE );
+                  return( NEWLINE );
                }
 
 {number}       {
-                  return( token::NUMBER ); 
+                  return( NUMBER ); 
                }
 
 {whitespace}   { /* skip */ }
 
 {word}         {
-                   return( token::STRINGLITERAL );
+                   return( STRINGLITERAL );
                }
 
 {identifier}   {
-                  return( token::IDENTIFIER );
+                  return( IDENTIFIER );
                }
 
 .              { /* skip */ }
 
+<<EOF>>        {return ( END ) ;}
+
 %%
 
 int main(){
-	FlexLexer* lexer = new yyFlexLexer;
 	int tok;
- 	while(tok = lexer->yylex()) {
- 		std::cout << tok;
+ 	while(tok = yylex()) {
+ 		printf("%d ",tok);
 	}
 	return 0;
 }
