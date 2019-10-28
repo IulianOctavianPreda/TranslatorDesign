@@ -15,7 +15,8 @@ whitespace  [ ]
 
 /* define yyterminate as this instead of NULL */
 #define yyterminate() return( END )
-
+/* output token to file*/
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
 %}
 %option nodefault
 %option noyywrap
@@ -105,4 +106,20 @@ int main(){
  		printf("%d ",tok);
 	}
 	return 0;
+}
+
+void readFromFile(char* fileName){
+  // set as input stream the file opened
+  if(!(yyin = fopen(fileName, "r"))) {
+      perror(argv[i]);
+      return (1);
+  }
+  action();
+}
+
+void action(){
+    int token; 
+    while(tok = yylex()) {
+ 		  printf("%d ",token);
+	  }
 }
