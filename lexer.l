@@ -100,38 +100,69 @@ cout           { return(COUT); }
 
 %%
 
-void action(){
-    int token; 
-    while(token = yylex()) {
- 		  printf("%d ",token);
-	  }
+void printTokens(int token){
+  printf("%d ",token);
 }
 
-void readFromFile(char* fileName){
+void saveToFile(){
+  fwrite( yytext, yyleng, 1, yyout );
+}
+
+void scan(void (*action)(int)){
+  int token; 
+  while(token = yylex()) {
+    (*action)(token);
+  }
+}
+
+void readFromFile(char* filename, void (*scan)(void (*action)(int)), void (*action)(int)){
   // set as input stream the file opened
-  if(!(yyin = fopen(fileName, "r"))) {
-      perror(fileName);
+  // yylex defaults to stdin if the yyin is not set
+  if(!(yyin = fopen(filename, "r"))) {
+      perror(filename);
       return;
   }
-  action();
+  // call the scan function with the action function as parameter
+  (*scan)(*action);
 }
 
-void readMultipleFiles(int argc, char** argv){
+void readMultipleFiles(int argc, char** argv, void (*scan)(void (*action)(int)), void (*action)(int)){
   int i;
   for(i = 1; i < argc; i++) {
+    // open file
     FILE *f = fopen(argv[i], "r");
 
     if(!f) {
       perror(argv[i]);
       return;
     }
+    // reset the lexer and set the input stream the file opened
     yyrestart(f);
-    action();
+    // call the scan function with the action function as parameter
+    (*scan)(*action);
     fclose(f);
  }
 }
 
+void printHelpMenu(){
+  printf("%s","<executable> - Read from the console.\n");
+  printf("%s","<executable> <filename> - Read from the file\n");
+  printf("%s","<executable> <filename1> <filename2> ... <filenameN> - Read from multiple files\n");
+  printf("%s","<executable> -h - Displays the help menu\n");
+}
+
 int main(int argc, char** argv){
-  action();
+  if(argc == 1){
+    scan(printTokens);
+  }
+  if(argc == 2) {
+    if(!strcmp(argv[1], "-h")){
+      printHelpMenu();
+    }else{
+      readFromFile(argv[1],scan,printTokens);
+    }
+  }else{
+    readMultipleFiles(argc,argv,scan,printTokens);
+  }
 	return 0;
 }
