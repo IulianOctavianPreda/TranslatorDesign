@@ -8,8 +8,12 @@ SOBJ = lexer
 
 all:
 	$(MAKE) $(SOBJ)
-	$(CXX) $(CXXFLAGS) ./build/lexer.o $(LIBS)
+	# $(CXX) $(CXXFLAGS) ./build/lexer.o $(LIBS)
+	# clean
 
 lexer: lexer.l
-	flex -o ./lexer.yy.c ./lexer.l 
-	$(CXX)  $(CXXFLAGS) ./lexer.yy.c -o $(BUILDPATH)/lexer.o -lfl
+	flex lexer.l 
+	$(CXX)  $(CXXFLAGS) lex.yy.c -lfl
+
+clean:
+	rm -rf lexer.yy.c lexer.yy.cc lex.yy.cc 
