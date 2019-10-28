@@ -17,9 +17,17 @@ To build the lexer code use
 To build the executable  
 `GCC ./lex.yy.c -lfl`
 
+Alternatively if you have make installed you can use  
+`make`  
+or  
+`make -f <makefile name>` if you want to make your own makefile
+
 To use the executable  
 `./a.out on linux`  
 `./a.exe on windows`
+
+
+
 
 It will then analyze anything you write into the console and for every match and action will be triggered
 
