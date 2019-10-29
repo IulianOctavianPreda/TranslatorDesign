@@ -104,8 +104,8 @@ void printTokens(int token){
   printf("%d ",token);
 }
 
-void saveToFile(){
-  fwrite( yytext, yyleng, 1, yyout );
+void saveToFile(int token){
+  fwrite( yytext, yyleng, 1, yyout);
 }
 
 void scan(void (*action)(int)){
@@ -113,6 +113,16 @@ void scan(void (*action)(int)){
   while(token = yylex()) {
     (*action)(token);
   }
+}
+
+void testScan(void (*action)(int)){
+  int token;
+  FILE* f = fopen("./test.out","w");
+  while(token = yylex()) {
+    fprintf(f,"%d ", token);
+    // fwrite( token, sizeof(int), 1, f);
+  }
+  fclose(f);
 }
 
 void readFromFile(char* filename, void (*scan)(void (*action)(int)), void (*action)(int)){
@@ -145,15 +155,64 @@ void readMultipleFiles(int argc, char** argv, void (*scan)(void (*action)(int)),
 }
 
 void printHelpMenu(){
-  printf("%s","<executable> - Read from the console.\n");
-  printf("%s","<executable> <filename> - Read from the file\n");
-  printf("%s","<executable> <filename1> <filename2> ... <filenameN> - Read from multiple files\n");
+  printf("%s","<executable> -i - Read from the console.\n");
+  printf("%s","<executable> -i <filename> - Read from the file\n");
+  printf("%s","<executable> -i <filename1> <filename2> ... <filenameN> - Read from multiple files\n");
   printf("%s","<executable> -h - Displays the help menu\n");
+  printf("%s","<executable> -h - Displays the help menu\n");
+
 }
 
+typedef struct Map{
+  char*   key;
+  char**  value;
+  int     numberOfValues;
+} Map;
+
+
+
 int main(int argc, char** argv){
+  // TODO - change function to accomodate multiple flags in any order 
+  // int i,j, numberOfFlags = 0, flagsVisited = 0, positionOfFlags[argc];
+  // for(i = 1; i < argc; i++){
+  //   if(strchr(argv[i],'-')){
+  //     positionOfFlags[numberOfFlags] = i;
+  //     numberOfFlags++;
+  //   }
+  // }
+
+  // // In order to not get an out of bound exception
+  // positionOfFlags[numberOfFlags + 1] = argc - 1;
+
+  // if(numberOfFlags != 0){
+  //   Map map[numberOfFlags];
+  //   for(i = 1; i < argc; i++){
+  //     if(strchr(argv[i],'-')){
+  //       flagsVisited++;
+  //       int numberOfParameters = positionOfFlags[flagsVisited + 1] - positionOfFlags[flagsVisited] - 1;
+  //       char** charArr;
+  //       for(j = 0; j < numberOfParameters; j++){
+  //         charArr[j] = "";
+  //       }
+  //       Map tempMap = {argv[i], charArr, 0};
+  //       map[i] = tempMap;
+  //     }else{
+  //       map[i].value[map[i].numberOfValues] = argv[i];
+  //       map[i].numberOfValues++;
+  //     }
+  //   }
+
+  //   for(i = 0; i < numberOfFlags; i++){
+  //     if(!strcmp(map[i].key,"-h")){
+  //       printHelpMenu();
+  //     }
+  //   }
+  // }else{
+  //   printHelpMenu();
+  // }
+
   if(argc == 1){
-    scan(printTokens);
+    scan(saveToFile);
   }
   if(argc == 2) {
     if(!strcmp(argv[1], "-h")){
@@ -162,6 +221,12 @@ int main(int argc, char** argv){
       readFromFile(argv[1],scan,printTokens);
     }
   }else{
+    if(!strcmp(argv[1], "-t")){
+      char* a = argv[0];
+      char* b = argv[2];
+      char** temp = {a,b};
+      readMultipleFiles(argc - 1,temp,testScan,saveToFile);
+    }
     readMultipleFiles(argc,argv,scan,printTokens);
   }
 	return 0;
