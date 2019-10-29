@@ -104,6 +104,10 @@ void printTokens(int token){
   printf("%d ",token);
 }
 
+void saveTokensToFile(int token, FILE* f){
+  fprintf(f,"%d ", token);
+}
+
 void saveToFile(int token){
   fwrite( yytext, yyleng, 1, yyout);
 }
@@ -120,7 +124,6 @@ void testScan(void (*action)(int)){
   FILE* f = fopen("./test.out","w");
   while(token = yylex()) {
     fprintf(f,"%d ", token);
-    // fwrite( token, sizeof(int), 1, f);
   }
   fclose(f);
 }
@@ -224,8 +227,8 @@ int main(int argc, char** argv){
     if(!strcmp(argv[1], "-t")){
       char* a = argv[0];
       char* b = argv[2];
-      char** temp = {a,b};
-      readMultipleFiles(argc - 1,temp,testScan,saveToFile);
+      char[][] temp = {a,b};
+      readMultipleFiles((argc - 1),temp,testScan,saveToFile);
     }
     readMultipleFiles(argc,argv,scan,printTokens);
   }
