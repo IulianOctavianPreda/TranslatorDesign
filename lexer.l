@@ -108,7 +108,7 @@ void saveTokensToFile(int token, FILE* f){
   fprintf(f,"%d ", token);
 }
 
-void saveToFile(int token){
+void saveToFile(){
   fwrite( yytext, yyleng, 1, yyout);
 }
 
@@ -215,21 +215,21 @@ int main(int argc, char** argv){
   // }
 
   if(argc == 1){
-    scan(saveToFile);
+    scan(printTokens);
   }
   if(argc == 2) {
     if(!strcmp(argv[1], "-h")){
       printHelpMenu();
     }else{
-      readFromFile(argv[1],scan,printTokens);
+      readFromFile(argv[1],testScan,printTokens);
     }
   }else{
-    if(!strcmp(argv[1], "-t")){
-      char* a = argv[0];
-      char* b = argv[2];
-      char[][] temp = {a,b};
-      readMultipleFiles((argc - 1),temp,testScan,saveToFile);
-    }
+    // if(!strcmp(argv[1], "-t")){
+    //   char* a = argv[0];
+    //   char* b = argv[2];
+    //   char** temp = {a,b};
+    //   readMultipleFiles(argc - 1,temp,testScan,saveToFile);
+    // }
     readMultipleFiles(argc,argv,scan,printTokens);
   }
 	return 0;
