@@ -42,9 +42,9 @@ void compare(string filename) {
   }
 
   if (inputTokens == outputTokens) {
-    std::cout << "Both vectors are equal";
+    std::cout << "Both vectors are equal" << endl;
   } else {
-    std::cout << "Both vectors are not equal";
+    std::cout << "Both vectors are not equal" << endl;
   }
 }
 
