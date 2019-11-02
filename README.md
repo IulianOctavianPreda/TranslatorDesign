@@ -1,14 +1,5 @@
 # TranslatorDesign
 
-Generate:
-
--   lexer with flex: main.exe 1
--   parser generator with bison: main.exe 2 /_provisory implementation as we don't have .y file yet_/
--   default: both lexer and parser /_provisory implementation as we don't have .y file yet_/
-
-When updating main.cpp use:  
-`g++ main.cpp -o main`
-
 # Instructions
 
 To build the lexer code use  
@@ -25,9 +16,6 @@ or
 To use the executable  
 `./a.out on linux`  
 `./a.exe on windows`
-
-
-
 
 It will then analyze anything you write into the console and for every match and action will be triggered
 
