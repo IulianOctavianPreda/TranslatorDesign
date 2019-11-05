@@ -5,12 +5,12 @@ CDEBUG = -g -Wall
 CXXDEBUG = -g -Wall
 
 CSTD = -std=c99
-CXXSTD = -std=c++14
+CXXSTD = -std=c++17
 
-CFLAGS = $(CDEBUG) $(CSTD) 
+CCFLAGS = $(CDEBUG) $(CSTD) 
 CXXFLAGS = $(CXXDEBUG) $(CXXSTD)
 
-
+SOURCEPATH = ./src
 BUILDPATH = ./build
 SOBJ = lexer
 
@@ -18,12 +18,12 @@ all:
 	$(MAKE) $(SOBJ)
 	# clean
 
-lexer: lexer.l
-	flex lexer.l 
-	$(CC)  $(CCFLAGS) lex.yy.c -lfl
+lexer: $(SOURCEPATH)/lexer/lexer.l
+	flex -o $(SOURCEPATH)/lexer/lex.yy.c $(SOURCEPATH)/lexer/lexer.l 
+	$(CC) $(CCFLAGS) $(SOURCEPATH)/lexer/lex.yy.c -lfl -o $(BUILDPATH)/lexer.out
 
 clean:
 	rm -rf lexer.yy.c lexer.yy.cc lex.yy.cc 
 
-testy: test.cpp
-	$(CXX) $(CXXFLAGS) test.cpp -o testy -lstdc++
+testy: $(SOURCEPATH)/test.cpp
+	$(CXX) $(CXXFLAGS) $(SOURCEPATH)/test.cpp -o  $(SOURCEPATH)/testy -lstdc++fs

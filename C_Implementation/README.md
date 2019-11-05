@@ -1,6 +1,9 @@
 # Instructions
 
-To build the lexer code use  
+## For the stand-alone lexer 
+Open a terminal in the lexer folder  
+
+To build the lexer code and  use  
 `flex ./lexer.l`
 
 To build the executable  
@@ -15,6 +18,21 @@ To use the executable
 `./a.out on linux`  
 `./a.exe on windows`
 
-It will then analyze anything you write into the console and for every match and action will be triggered
+### Arguments for the lexer
 
-yywrap needs to be declared in the lexer.l or %noyywrap need to be present in it
+    Flags like -i -ap can be used together and are recommended to be used together
+    The lexer defaults to print tokens to the console
+    <executable> -h - Displays the help menu
+    <executable> -i - Read from the console.
+    <executable> -i <filename> - Read from the file
+    <executable> -i <filename1> <filename2> ... <filenameN> - Read from multiple files
+    <executable> -ap - Prints the scanned tokens to the console
+    <executable> -as <filename> - Saves the scanned tokens to the console
+
+### Tests 
+
+In the src folder you can use the test.cpp to run various test.
+It accepts the following arguments:
+
+    -lex <folder path to lexer> - to run all lexer tests
+    -lex <folder path to lexer> <filename> - to run a specific lexer test
