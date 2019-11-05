@@ -3,10 +3,10 @@ number      {digit}+
 letter      [a-zA-Z]
 word        {letter}+
 identifier  (_|{letter})({letter}|{digit}|_)*
-newline     [\n]
-tab         [\t]
+newline     [(\r\n)|(\n)]
 string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
-whitespace  [ ]
+/* blank - space and tabs */
+whitespace  [:blank:]
 
 %{
 /* C string header, for string ops below */
@@ -73,26 +73,22 @@ cout           { return(COUT); }
 \<              { return(GL); }
 \>              { return(GR); }
 
-[\n]            {
+{newline}       {
                   return( NEWLINE );
                 }
-[\t\n]          {
-                  return( NEWLINE );
-               }
-
-{number}       {
+{number}        {
                   return( NUMBER ); 
-               }
+                }
 
-{whitespace}   { /* skip */ }
+{whitespace}    { /* skip */ }
 
-{word}         {
+{word}          {
                    return( STRINGLITERAL );
-               }
+                }
 
-{identifier}   {
+{identifier}    {
                   return( IDENTIFIER );
-               }
+                }
 
 .              { /* skip */ }
 
@@ -104,13 +100,13 @@ void printTokens(int token){
   printf("%d ",token);
 }
 
-void saveTokensToFile(int token, FILE* f){
-  fprintf(f,"%d ", token);
+void saveTokensToFile(int token){
+  fprintf(yyout,"%d ", token);
 }
 
-void saveToFile(){
-  fwrite( yytext, yyleng, 1, yyout);
-}
+// void saveToFile(){
+//   fwrite( yytext, yyleng, 1, yyout);
+// }
 
 void scan(void (*action)(int)){
   int token; 
@@ -119,14 +115,14 @@ void scan(void (*action)(int)){
   }
 }
 
-void testScan(void (*action)(int)){
-  int token;
-  FILE* f = fopen("./test.out","w");
-  while(token = yylex()) {
-    fprintf(f,"%d ", token);
-  }
-  fclose(f);
-}
+// void scanToFile(void (*action)(int)){
+//   int token;
+//   FILE* f = fopen("./test.out","w");
+//   while(token = yylex()) {
+//     saveTokensToFile(token);
+//   }
+//   fclose(f);
+// }
 
 void readFromFile(char* filename, void (*scan)(void (*action)(int)), void (*action)(int)){
   // set as input stream the file opened
@@ -139,14 +135,15 @@ void readFromFile(char* filename, void (*scan)(void (*action)(int)), void (*acti
   (*scan)(*action);
 }
 
-void readMultipleFiles(int argc, char** argv, void (*scan)(void (*action)(int)), void (*action)(int)){
+void readMultipleFiles(int numberOfFiles, char** fileNames, void (*scan)(void (*action)(int)), void (*action)(int)){
   int i;
-  for(i = 1; i < argc; i++) {
+  for(i = 0; i < numberOfFiles; i++) {
     // open file
-    FILE *f = fopen(argv[i], "r");
+    printf("%s\n",fileNames[i]);
+    FILE *f = fopen(fileNames[i], "r");
 
     if(!f) {
-      perror(argv[i]);
+      perror(fileNames[i]);
       return;
     }
     // reset the lexer and set the input stream the file opened
@@ -157,80 +154,82 @@ void readMultipleFiles(int argc, char** argv, void (*scan)(void (*action)(int)),
  }
 }
 
+char **copy_argv(char *argv[], int start, int end) {
+  // calculate the contiguous argv buffer size
+  int length=0;
+  size_t ptr_args = end - start + 1;
+  for (int i = start + 1; i < end + 1; i++)
+  {
+    length += (strlen(argv[i]) + 1);
+  }
+  char** new_argv = (char**)malloc((ptr_args) * sizeof(char*) + length);
+  // copy argv into the contiguous buffer
+  length = 0;
+  int k = 0;
+  for (int i =  start + 1; i < end + 1; i++)
+  {
+    new_argv[k] = &(((char*)new_argv)[(ptr_args * sizeof(char*)) + length]);
+    strcpy(new_argv[k], argv[i]);
+    length += (strlen(argv[i]) + 1);
+    k++;
+  }
+  // insert NULL terminating ptr at the end of the ptr array
+  new_argv[ptr_args-1] = NULL;
+  return (new_argv);
+}
+
 void printHelpMenu(){
+  printf("%s","Flags like -i -ap can be used together and are recommended to be used together\n");
+  printf("%s","The lexer defaults to print tokens to the console\n");
+  printf("%s","<executable> -h - Displays the help menu\n");
   printf("%s","<executable> -i - Read from the console.\n");
   printf("%s","<executable> -i <filename> - Read from the file\n");
   printf("%s","<executable> -i <filename1> <filename2> ... <filenameN> - Read from multiple files\n");
-  printf("%s","<executable> -h - Displays the help menu\n");
-  printf("%s","<executable> -h - Displays the help menu\n");
-
+  printf("%s","<executable> -ap - Prints the scanned tokens to the console\n");
+  printf("%s","<executable> -as <filename> - Saves the scanned tokens to the console\n");
 }
-
-typedef struct Map{
-  char*   key;
-  char**  value;
-  int     numberOfValues;
-} Map;
-
-
 
 int main(int argc, char** argv){
-  // TODO - change function to accomodate multiple flags in any order 
-  // int i,j, numberOfFlags = 0, flagsVisited = 0, positionOfFlags[argc];
-  // for(i = 1; i < argc; i++){
-  //   if(strchr(argv[i],'-')){
-  //     positionOfFlags[numberOfFlags] = i;
-  //     numberOfFlags++;
-  //   }
-  // }
-
-  // // In order to not get an out of bound exception
-  // positionOfFlags[numberOfFlags + 1] = argc - 1;
-
-  // if(numberOfFlags != 0){
-  //   Map map[numberOfFlags];
-  //   for(i = 1; i < argc; i++){
-  //     if(strchr(argv[i],'-')){
-  //       flagsVisited++;
-  //       int numberOfParameters = positionOfFlags[flagsVisited + 1] - positionOfFlags[flagsVisited] - 1;
-  //       char** charArr;
-  //       for(j = 0; j < numberOfParameters; j++){
-  //         charArr[j] = "";
-  //       }
-  //       Map tempMap = {argv[i], charArr, 0};
-  //       map[i] = tempMap;
-  //     }else{
-  //       map[i].value[map[i].numberOfValues] = argv[i];
-  //       map[i].numberOfValues++;
-  //     }
-  //   }
-
-  //   for(i = 0; i < numberOfFlags; i++){
-  //     if(!strcmp(map[i].key,"-h")){
-  //       printHelpMenu();
-  //     }
-  //   }
-  // }else{
-  //   printHelpMenu();
-  // }
-
+  int i;
   if(argc == 1){
-    scan(printTokens);
-  }
-  if(argc == 2) {
-    if(!strcmp(argv[1], "-h")){
-      printHelpMenu();
-    }else{
-      readFromFile(argv[1],testScan,printTokens);
-    }
+    printHelpMenu();
   }else{
-    // if(!strcmp(argv[1], "-t")){
-    //   char* a = argv[0];
-    //   char* b = argv[2];
-    //   char** temp = {a,b};
-    //   readMultipleFiles(argc - 1,temp,testScan,saveToFile);
-    // }
-    readMultipleFiles(argc,argv,scan,printTokens);
+    void (*action)(int) = printTokens;
+    void (*scanFunction)(void (*action)(int)) = scan;
+
+    for (i = 1; i < argc; i++) {
+      if (!strcmp(argv[i], "-ap")) {
+        action = printTokens;
+      }
+      if (!strcmp(argv[i], "-as")) {
+        action = saveTokensToFile;
+        if(i < argc)
+        yyout = fopen(argv[i + 1],"w");
+      }
+    }
+    for (i = 1; i < argc; i++) {
+      if (!strcmp(argv[i], "-h")) {
+        printHelpMenu();
+      }
+      if (!strcmp(argv[i], "-i")) {
+        int j = i;
+        while(j + 1 < argc && strchr(argv[j + 1], '-') == NULL){
+          j++;
+        }
+        // j - i because we use 0 based index position
+        if(j - i == 0){
+          (void)(*scanFunction)(*action);
+        }else {
+          if (j - i == 1){
+            readFromFile(argv[j], scanFunction, action);
+          }else{
+            char** filenames = copy_argv(argv,i,j);
+            readMultipleFiles(j - i,filenames , scanFunction, action);
+          }
+        }
+      }
+    }
   }
-	return 0;
+  return 0;
 }
+
