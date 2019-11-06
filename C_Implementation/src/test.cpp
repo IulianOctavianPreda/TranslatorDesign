@@ -69,9 +69,9 @@ void compare(string path, string filename) {
   }
 
   if (expectedTokens == outputTokens) {
-    std::cout << "Passed" << endl;
+    std::cout << filename << " Passed" << endl;
   } else {
-    std::cout << "Failed" << endl;
+    std::cout << filename << " Failed" << endl;
   }
 }
 
