@@ -27,3 +27,6 @@ clean:
 
 testy: $(SOURCEPATH)/test.cpp
 	$(CXX) $(CXXFLAGS) $(SOURCEPATH)/test.cpp -o  $(SOURCEPATH)/testy -lstdc++fs
+
+clean-testy: $(SOURCEPATH)/testy
+	rm -rf $(SOURCEPATH)/testy

@@ -14,7 +14,7 @@ SOBJ = lexer
 
 all:
 	$(MAKE) $(SOBJ)
-	clean
+	$(MAKE) clean
 
 lexer: lexer.l
 	flex lexer.l 
@@ -22,3 +22,6 @@ lexer: lexer.l
 
 clean:
 	rm -rf lex.yy.c
+
+clean-lexer:
+	rm -rf a.out
