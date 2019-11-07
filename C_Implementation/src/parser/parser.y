@@ -92,9 +92,9 @@ stmtList
  | /* empty */
  ;
 stmt
- : CIN READ id ';'
- | CIN READ id '[' exp ']' ';'
- | COUT WRITE exp ';'
+ : CIN RIGHT_OP id ';'
+ | CIN RIGHT_OP id '[' exp ']' ';'
+ | COUT LEFT_OP exp ';'
  | subscriptExpr '=' exp ';'
  | id '=' exp ';'
  | IF '(' exp ')' block
@@ -110,14 +110,14 @@ exp
  | exp '*' exp
  | exp '/' exp
  | '!' exp
- | exp ANDAND exp
- | exp OROR exp
- | exp EQEQ exp
- | exp NOTEQ exp
+ | exp AND_OP exp
+ | exp OR_OP exp
+ | exp EQ_OP exp
+ | exp NE_OP exp
  | exp '<' exp
  | exp '>' exp
- | exp LESSEQ exp
- | exp GREATEREQ exp
+ | exp GL exp
+ | exp GR exp
  | '-' atom
  | atom
  ;

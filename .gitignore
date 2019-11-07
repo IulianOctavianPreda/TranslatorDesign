@@ -6,3 +6,4 @@ testy
 test.out
 
 
+C_Implementation/src/parser/parser.tab.c
