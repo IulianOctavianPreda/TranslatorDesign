@@ -1,0 +1,235 @@
+digit       [0-9]
+number      {digit}+
+letter      [a-zA-Z]
+word        {letter}+
+identifier  (_|{letter})({letter}|{digit}|_)*
+newline     [(\r\n)|(\n)]
+string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
+/* blank - space and tabs */
+whitespace  [:blank:]
+
+%{
+/* C string header, for string ops below */
+#include <stdlib.h>
+#include "mock_tokens.hh"
+
+/* define yyterminate as this instead of NULL */
+#define yyterminate() return( END )
+/* output token to file*/
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
+%}
+%option nodefault
+%option noyywrap
+
+%%
+
+%{          
+   int yylval;
+%}
+        
+    /* Reserved keywords*/
+
+int            { return(INT); }
+bool           { return(BOOL); }
+void           { return(VOID); }
+true           { return(TRUE); }
+false          { return(FALSE); }
+if             { return(IF); }
+else           { return(ELSE); }
+while          { return(WHILE); }
+return         { return(RETURN); }
+cin            { return(CIN); }
+cout           { return(COUT); }
+
+
+  /* comments */
+
+^\/\/.*\n$     { /* comment */ }
+^\#.*\n$       { /* comment */ }
+
+  /* special characters */
+
+\>\>            { return(RIGHT_OP); }
+\<\<            { return(LEFT_OP); }
+\&\&            { return(AND_OP); }
+\|\|            { return(OR_OP); }
+\<\=            { return(LE_OP); }
+\>\=            { return(GE_OP); }
+\=\=            { return(EQ_OP); }
+\!\=            { return(NE_OP); }
+\;              { return(SEMICOL); }
+\{              { return(LB); }
+\}              { return(RB); }
+\,              { return(COL); }
+\=              { return(EQ); }
+\(              { return(LRB); }
+\)              { return(RRB); }
+\[              { return(LSB); }
+\]              { return(RSB); }
+\-              { return(MINUS); }
+\+              { return(PLUS); }
+\*              { return(TIMES); }
+\/              { return(DIVIDE); }
+\<              { return(GL); }
+\>              { return(GR); }
+
+{newline}       {
+                  return( NEWLINE );
+                }
+{number}        {
+                  return( NUMBER ); 
+                }
+
+{whitespace}    { /* skip */ }
+
+{word}          {
+                   return( STRINGLITERAL );
+                }
+
+{identifier}    {
+                  return( IDENTIFIER );
+                }
+
+.              { /* skip */ }
+
+<<EOF>>        {return ( END ) ;}
+
+%%
+
+void printTokens(int token){
+  printf("%d ",token);
+}
+
+void saveTokensToFile(int token){
+  fprintf(yyout,"%d ", token);
+}
+
+// void saveToFile(){
+//   fwrite( yytext, yyleng, 1, yyout);
+// }
+
+void scan(void (*action)(int)){
+  int token; 
+  while(token = yylex()) {
+    (*action)(token);
+  }
+}
+
+// void scanToFile(void (*action)(int)){
+//   int token;
+//   FILE* f = fopen("./test.out","w");
+//   while(token = yylex()) {
+//     saveTokensToFile(token);
+//   }
+//   fclose(f);
+// }
+
+void readFromFile(char* filename, void (*scan)(void (*action)(int)), void (*action)(int)){
+  // set as input stream the file opened
+  // yylex defaults to stdin if the yyin is not set
+  if(!(yyin = fopen(filename, "r"))) {
+      perror(filename);
+      return;
+  }
+  // call the scan function with the action function as parameter
+  (*scan)(*action);
+}
+
+void readMultipleFiles(int numberOfFiles, char** fileNames, void (*scan)(void (*action)(int)), void (*action)(int)){
+  int i;
+  for(i = 0; i < numberOfFiles; i++) {
+    // open file
+    printf("%s\n",fileNames[i]);
+    FILE *f = fopen(fileNames[i], "r");
+
+    if(!f) {
+      perror(fileNames[i]);
+      return;
+    }
+    // reset the lexer and set the input stream the file opened
+    yyrestart(f);
+    // call the scan function with the action function as parameter
+    (*scan)(*action);
+    fclose(f);
+ }
+}
+
+char **copy_argv(char *argv[], int start, int end) {
+  // calculate the contiguous argv buffer size
+  int length=0;
+  size_t ptr_args = end - start + 1;
+  for (int i = start + 1; i < end + 1; i++)
+  {
+    length += (strlen(argv[i]) + 1);
+  }
+  char** new_argv = (char**)malloc((ptr_args) * sizeof(char*) + length);
+  // copy argv into the contiguous buffer
+  length = 0;
+  int k = 0;
+  for (int i =  start + 1; i < end + 1; i++)
+  {
+    new_argv[k] = &(((char*)new_argv)[(ptr_args * sizeof(char*)) + length]);
+    strcpy(new_argv[k], argv[i]);
+    length += (strlen(argv[i]) + 1);
+    k++;
+  }
+  // insert NULL terminating ptr at the end of the ptr array
+  new_argv[ptr_args-1] = NULL;
+  return (new_argv);
+}
+
+void printHelpMenu(){
+  printf("%s","Flags like -i -ap can be used together and are recommended to be used together\n");
+  printf("%s","The lexer defaults to print tokens to the console\n");
+  printf("%s","<executable> -h - Displays the help menu\n");
+  printf("%s","<executable> -i - Read from the console.\n");
+  printf("%s","<executable> -i <filename> - Read from the file\n");
+  printf("%s","<executable> -i <filename1> <filename2> ... <filenameN> - Read from multiple files\n");
+  printf("%s","<executable> -ap - Prints the scanned tokens to the console\n");
+  printf("%s","<executable> -as <filename> - Saves the scanned tokens to the console\n");
+}
+
+int main(int argc, char** argv){
+  int i;
+  if(argc == 1){
+    printHelpMenu();
+  }else{
+    void (*action)(int) = printTokens;
+    void (*scanFunction)(void (*action)(int)) = scan;
+
+    for (i = 1; i < argc; i++) {
+      if (!strcmp(argv[i], "-ap")) {
+        action = printTokens;
+      }
+      if (!strcmp(argv[i], "-as")) {
+        action = saveTokensToFile;
+        if(i < argc)
+        yyout = fopen(argv[i + 1],"w");
+      }
+    }
+    for (i = 1; i < argc; i++) {
+      if (!strcmp(argv[i], "-h")) {
+        printHelpMenu();
+      }
+      if (!strcmp(argv[i], "-i")) {
+        int j = i;
+        while(j + 1 < argc && strchr(argv[j + 1], '-') == NULL){
+          j++;
+        }
+        // j - i because we use 0 based index position
+        if(j - i == 0){
+          (void)(*scanFunction)(*action);
+        }else {
+          if (j - i == 1){
+            readFromFile(argv[j], scanFunction, action);
+          }else{
+            char** filenames = copy_argv(argv,i,j);
+            readMultipleFiles(j - i,filenames , scanFunction, action);
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+
