@@ -41,7 +41,7 @@ vector<int> splitString(string str) {
   return tokens;
 }
 
-void compare(string path, string filename) {
+bool compare(string path, string filename) {
   std::ifstream expectedFile, outputFile;
 
   std::string expectedFilename =
@@ -73,6 +73,7 @@ void compare(string path, string filename) {
   } else {
     std::cout << filename << " Failed" << endl;
   }
+  return expectedTokens == outputTokens;
 }
 
 int main(int argc, char **argv) {
@@ -98,6 +99,8 @@ int main(int argc, char **argv) {
       std::string path(flags["-lex"][0]);
       if (flags["-lex"].size() == 1) {
         // run all tests from path
+        int passedTests = 0;
+        int totalTests = 0;
         for (const auto &entry :
              fs::directory_iterator(path + "/tests/input/")) {
           std::string filename(entry.path().filename());
@@ -106,8 +109,11 @@ int main(int argc, char **argv) {
                                 filename + " -as " + path + "/tests/output/" +
                                 basename + ".output";
           system(command.c_str());
-          compare(path, basename);
+          auto result = compare(path, basename);
+          passedTests = result ? passedTests + 1 : passedTests;
+          totalTests++;
         }
+        cout << passedTests << "/" << totalTests << " Tests Passed" << endl;
       } else {
         // system("make");
         std::string filename(flags["-lex"][1]);
