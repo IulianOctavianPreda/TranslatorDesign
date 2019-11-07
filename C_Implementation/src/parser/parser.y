@@ -1,3 +1,8 @@
+%{
+#include <stdio.h>
+%}
+
+
 %token               INT
 %token               BOOL
 %token               VOID
@@ -39,7 +44,8 @@
 %token               END    0     "end of file"
 
 /*operator precedence*/
-%left "&&" "||"
+%left "||"
+%left "&&"
 %right '!'
 %left '>' '<' "<=" ">=" "!=" "=="
 %left '+' '-'
@@ -148,3 +154,13 @@ id
  : IDENTIFIER
  ;
 %%
+int main(int argc, char **argv)
+{
+ yyparse();
+ return 0;
+}
+
+void yyerror(char *s)
+{
+ fprintf(stderr, "error: %s\n", s);
+}
