@@ -11,7 +11,14 @@ whitespace  [:blank:]
 %{
 /* C string header, for string ops below */
 #include <stdlib.h>
-#include "mock_tokens.hh"
+
+#if __has_include("../parser/parser.tab.h") 
+  #include "../parser/parser.tab.h"
+#endif
+
+#if !__has_include("../parser/parser.tab.h") 
+  #include "mock_tokens.hh"
+#endif
 
 /* define yyterminate as this instead of NULL */
 #define yyterminate() return( END )

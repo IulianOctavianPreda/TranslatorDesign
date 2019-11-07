@@ -17,11 +17,11 @@ all:
 	$(MAKE) clean
 
 parser: parser.y
-	bison parser.y 
+	bison -d parser.y 
 	$(CC) $(CCFLAGS) parser.tab.c
 
 clean:
-	rm -rf parser.tab.c
+	rm -rf parser.tab.c parser.tab.h
 
 clean-parser:
 	rm -rf a.out
