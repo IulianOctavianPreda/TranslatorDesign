@@ -34,8 +34,9 @@ enum yytokentype {
   DIVIDE = 289,
   GL = 290,
   GR = 291,
-  IDENTIFIER = 292,
-  NUMBER = 293,
-  NEWLINE = 294,
-  STRINGLITERAL = 295
+  NOT = 292,
+  IDENTIFIER = 293,
+  NUMBER = 294,
+  STRINGLITERAL = 295,
+  NEWLINE = 296
 };
