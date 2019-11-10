@@ -2,6 +2,10 @@
 #include <stdio.h>
 %}
 
+%union{
+    int intVal;
+    char* stringVal;
+}
 
 %token               INT
 %token               BOOL
@@ -37,10 +41,11 @@
 %token               DIVIDE
 %token               GL 
 %token               GR 
+%token               NOT 
 %token				 IDENTIFIER 
-%token				 NUMBER 
+%token	<intVal>	 NUMBER 
+%token <stringVal>   STRINGLITERAL 
 %token				 NEWLINE 
-%token				 STRINGLITERAL 
 %token               END    0     "end of file"
 
 /*operator precedence*/
@@ -58,8 +63,8 @@ program
  | /* empty */
  ;
 varDecl
- : type id ';'
- | type id '[' INT ']' ';'
+ : type id SEMICOL
+ | type id '[' INT ']' SEMICOL
  ;
 type
  : INT
@@ -92,37 +97,37 @@ stmtList
  | /* empty */
  ;
 stmt
- : CIN RIGHT_OP id ';'
- | CIN RIGHT_OP id '[' exp ']' ';'
- | COUT LEFT_OP exp ';'
- | subscriptExpr '=' exp ';'
- | id '=' exp ';'
+ : CIN RIGHT_OP id SEMICOL
+ | CIN RIGHT_OP id '[' exp ']' SEMICOL
+ | COUT LEFT_OP exp SEMICOL
+ | subscriptExpr EQ exp SEMICOL
+ | id EQ exp SEMICOL
  | IF '(' exp ')' block
  | IF '(' exp ')' block ELSE block
  | WHILE '(' exp ')' block
- | RETURN exp ';'
- | RETURN ';'
- | fnCallStmt ';'
+ | RETURN exp SEMICOL
+ | RETURN SEMICOL
+ | fnCallStmt SEMICOL
  ;
 exp
- : exp '+' exp
- | exp '-' exp
- | exp '*' exp
- | exp '/' exp
- | '!' exp
+ : exp PLUS exp
+ | exp MINUS exp
+ | exp TIMES exp
+ | exp DIVIDE exp
+ | NOT exp
  | exp AND_OP exp
  | exp OR_OP exp
  | exp EQ_OP exp
  | exp NE_OP exp
- | exp '<' exp
- | exp '>' exp
+ | exp LE_OP exp
+ | exp GE_OP exp
  | exp GL exp
  | exp GR exp
- | '-' atom
+ | MINUS atom
  | atom
  ;
 atom
- : INT
+ : NUMBER
  | STRINGLITERAL
  | TRUE
  | FALSE

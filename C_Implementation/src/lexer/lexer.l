@@ -79,6 +79,7 @@ cout           { return(COUT); }
 \/              { return(DIVIDE); }
 \<              { return(GL); }
 \>              { return(GR); }
+\!              { return(NOT); }
 
 {newline}       {
                   return( NEWLINE );
