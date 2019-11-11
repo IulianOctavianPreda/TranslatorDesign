@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
   std::vector<std::string> args(argv + 1, argv + argc);
   if (argc == 1) {
     cout
+        << "use -lex - to run all tests from default path '/lexer'" << endl
         << "use -lex <folder path to lexer> - to run all tests" << endl
         << "use -lex <folder path to lexer> <filename> - to run a specific test"
         << endl;
@@ -96,8 +97,13 @@ int main(int argc, char **argv) {
       }
     }
     if (flags.find("-lex") != flags.end()) {
-      std::string path(flags["-lex"][0]);
-      if (flags["-lex"].size() == 1) {
+      std::string path;
+      if (flags["-lex"].size() == 0 || flags["-lex"].size() == 1) {
+        if (flags["-lex"].size() == 0) {
+          path = "./lexer";
+        } else {
+          path = flags["-lex"][0];
+        }
         // run all tests from path
         int passedTests = 0;
         int totalTests = 0;
