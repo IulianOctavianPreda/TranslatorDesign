@@ -64,7 +64,7 @@ program
  ;
 varDecl
  : type id SEMICOL
- | type id '[' INT ']' SEMICOL
+ | type id LSB INT RSB SEMICOL
  ;
 type
  : INT
@@ -75,8 +75,8 @@ fnDecl
  : type id parameters block
  ;
 parameters
- : '(' ')'
- | '(' formalsList ')'
+ : LRB LRB
+ | LRB formalsList LRB
  ;
 formalsList
  : formalDecl
@@ -86,7 +86,7 @@ formalDecl
  : type id
  ;
 block
- : '{' declList stmtList '}'
+ : LB declList stmtList RB
  ;
 declList
  : declList varDecl
@@ -98,13 +98,13 @@ stmtList
  ;
 stmt
  : CIN RIGHT_OP id SEMICOL
- | CIN RIGHT_OP id '[' exp ']' SEMICOL
+ | CIN RIGHT_OP id LSB exp RSB SEMICOL
  | COUT LEFT_OP exp SEMICOL
  | subscriptExpr EQ exp SEMICOL
  | id EQ exp SEMICOL
- | IF '(' exp ')' block
- | IF '(' exp ')' block ELSE block
- | WHILE '(' exp ')' block
+ | IF LRB exp LRB block
+ | IF LRB exp LRB block ELSE block
+ | WHILE LRB exp LRB block
  | RETURN exp SEMICOL
  | RETURN SEMICOL
  | fnCallStmt SEMICOL
@@ -131,20 +131,20 @@ atom
  | STRINGLITERAL
  | TRUE
  | FALSE
- | '(' exp ')'
+ | LRB exp LRB
  | fnCallExpr
  | subscriptExpr
  | id
  ;
  
 fnCallExpr
- : id '(' ')'
- | id '(' actualList ')'
+ : id LRB LRB
+ | id LRB actualList LRB
  ;
  
 fnCallStmt
- : id '(' ')'
- | id '(' actualList ')'
+ : id LRB LRB
+ | id LRB actualList LRB
  ;
  
 actualList
@@ -153,7 +153,7 @@ actualList
  ;
  
 subscriptExpr
- : id '[' exp ']'
+ : id LSB exp RSB
  ;
 id
  : IDENTIFIER
