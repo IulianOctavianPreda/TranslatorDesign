@@ -1,0 +1,15 @@
+#include <stdio.h>
+
+extern int yylex();
+extern FILE* yyin;
+extern FILE* yyout;
+
+void printTokens(int token);
+void saveTokensToFile(int token);
+void scan(void (*action)(int));
+void readFromFile(char* filename, void (*scan)(void (*action)(int)),
+                  void (*action)(int));
+void readMultipleFiles(int numberOfFiles, char** fileNames,
+                       void (*scan)(void (*action)(int)), void (*action)(int));
+char** copy_argv(char* argv[], int start, int end);
+void printHelpMenu();
