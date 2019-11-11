@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 extern int yylex();
 extern FILE* yyin;
