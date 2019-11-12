@@ -55,6 +55,7 @@
 %left '>' '<' "<=" ">=" "!=" "=="
 %left '+' '-'
 %left '*' '/'
+%left '(' ')'
 %%
 /*grammar*/
 program

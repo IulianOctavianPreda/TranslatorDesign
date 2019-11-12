@@ -4,6 +4,7 @@
 extern int yylex();
 extern FILE* yyin;
 extern FILE* yyout;
+extern void yyrestart(FILE*);
 
 void printTokens(int token);
 void saveTokensToFile(int token);
