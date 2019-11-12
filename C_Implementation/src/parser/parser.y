@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "../ast/ast.h"
 TreeNode* TreeRoot = NULL;
 %}
 
