@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+TreeNode* TreeRoot = NULL;
 %}
 
 %union{
@@ -59,105 +60,105 @@
 %%
 /*grammar*/
 program
- : program varDecl
- | program fnDecl
- | /* empty */
+ : program varDecl { $$=GenerateTreeNode(S_Program,"Program",2,$1,$2); TreeRoot = $$;}
+ | program fnDecl  { $$=GenerateTreeNode(S_Program,"Program",2,$1,$2); TreeRoot = $$;}
+ | /* empty */     { $$=GenerateTreeNode(S_Program,"Program",-1); TreeRoot = $$;}
  ;
 varDecl
- : type id SEMICOL
- | type id LSB INT RSB SEMICOL
+ : type id SEMICOL             { $$=GenerateTreeNode(S_VarDecl,"VarDecl",3,$1,$2,$3); TreeRoot = $$;}
+ | type id LSB INT RSB SEMICOL { $$=GenerateTreeNode(S_VarDecl,"VarDecl",6,$1,$2,$3,$4,$5,$6); TreeRoot = $$;}
  ;
 type
- : INT
- | BOOL
- | VOID
+ : INT  { $$=GenerateTreeNode(S_Type,"Type",1,$1); TreeRoot = $$;}
+ | BOOL { $$=GenerateTreeNode(S_Type,"Type",1,$1); TreeRoot = $$;}
+ | VOID { $$=GenerateTreeNode(S_Type,"Type",1,$1); TreeRoot = $$;}
  ;
 fnDecl
- : type id parameters block
+ : type id parameters block { $$=GenerateTreeNode(S_FnDecl,"FnDecl",4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
 parameters
- : LRB LRB
- | LRB formalsList LRB
+ : LRB LRB { $$=GenerateTreeNode(S_Parameters,"Parameters",2,$1,$2); TreeRoot = $$;}
+ | LRB formalsList LRB { $$=GenerateTreeNode(S_Parameters,"Parameters",3,$1,$2,$3); TreeRoot = $$;}
  ;
 formalsList
- : formalDecl
- | formalsList ',' formalDecl
+ : formalDecl { $$=GenerateTreeNode(S_FormalsList,"FormalsList",1,$1); TreeRoot = $$;}
+ | formalsList ',' formalDecl { $$=GenerateTreeNode(S_FormalsList,"FormalsList",3,$1,$2,$3); TreeRoot = $$;}
  ;
 formalDecl
- : type id
+ : type id  { $$=GenerateTreeNode(S_FormalDecl,"FormalDecl",2,$1,$2); TreeRoot = $$;}
  ;
 block
- : LB declList stmtList RB
+ : LB declList stmtList RB { $$=GenerateTreeNode(S_Block,"Block",4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
 declList
- : declList varDecl
- | /* empty */
+ : declList varDecl { $$=GenerateTreeNode(S_DeclList,"DeclList",2,$1,$2); TreeRoot = $$;}
+ | /* empty */      { $$=GenerateTreeNode(S_DeclList,"DeclList",-1); TreeRoot = $$;}
  ;
 stmtList
- : stmtList stmt
- | /* empty */
+ : stmtList stmt { $$=GenerateTreeNode(S_DeclList,"DeclList",2,$1,$2); TreeRoot = $$;}
+ | /* empty */   { $$=GenerateTreeNode(S_StmtList,"StmtList",-1); TreeRoot = $$;}
  ;
 stmt
- : CIN RIGHT_OP id SEMICOL
- | CIN RIGHT_OP id LSB exp RSB SEMICOL
- | COUT LEFT_OP exp SEMICOL
- | subscriptExpr EQ exp SEMICOL
- | id EQ exp SEMICOL
- | IF LRB exp LRB block
- | IF LRB exp LRB block ELSE block
- | WHILE LRB exp LRB block
- | RETURN exp SEMICOL
- | RETURN SEMICOL
- | fnCallStmt SEMICOL
+ : CIN RIGHT_OP id SEMICOL  { $$=GenerateTreeNode(S_Stmt,"Stmt",4,$1,$2,$3,$4); TreeRoot = $$;}
+ | CIN RIGHT_OP id LSB exp RSB SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",7,$1,$2,$3,$4,$5,$6,$7); TreeRoot = $$;}
+ | COUT LEFT_OP exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",4,$1,$2,$3,$4); TreeRoot = $$;}
+ | subscriptExpr EQ exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",4,$1,$2,$3,$4); TreeRoot = $$;}
+ | id EQ exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",4,$1,$2,$3,$4); TreeRoot = $$;}
+ | IF LRB exp LRB block { $$=GenerateTreeNode(S_Stmt,"Stmt",4,$1,$2,$3,$4); TreeRoot = $$;}
+ | IF LRB exp LRB block ELSE block { $$=GenerateTreeNode(S_Stmt,"Stmt",7,$1,$2,$3,$4,$5,$6,$7); TreeRoot = $$;}
+ | WHILE LRB exp LRB block { $$=GenerateTreeNode(S_Stmt,"Stmt",4,$1,$2,$3,$4); TreeRoot = $$;}
+ | RETURN exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",3,$1,$2,$3); TreeRoot = $$;}
+ | RETURN SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",2,$1,$2); TreeRoot = $$;}
+ | fnCallStmt SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",2,$1,$2); TreeRoot = $$;}
  ;
 exp
- : exp PLUS exp
- | exp MINUS exp
- | exp TIMES exp
- | exp DIVIDE exp
- | NOT exp
- | exp AND_OP exp
- | exp OR_OP exp
- | exp EQ_OP exp
- | exp NE_OP exp
- | exp LE_OP exp
- | exp GE_OP exp
- | exp GL exp
- | exp GR exp
- | MINUS atom
- | atom
+ : exp PLUS exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp MINUS exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp TIMES exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp DIVIDE exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | NOT exp  { $$=GenerateTreeNode(S_Exp,"Exp",2,$1,$2); TreeRoot = $$;}
+ | exp AND_OP exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp OR_OP exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp EQ_OP exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp NE_OP exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp LE_OP exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp GE_OP exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp GL exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | exp GR exp { $$=GenerateTreeNode(S_Exp,"Exp",3,$1,$2,$3); TreeRoot = $$;}
+ | MINUS atom { $$=GenerateTreeNode(S_Exp,"Exp",2,$1,$2); TreeRoot = $$;}
+ | atom { $$=GenerateTreeNode(S_Exp,"Exp",1,$1); TreeRoot = $$;}
  ;
 atom
- : NUMBER
- | STRINGLITERAL
- | TRUE
- | FALSE
- | LRB exp LRB
- | fnCallExpr
- | subscriptExpr
- | id
+ : NUMBER  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
+ | STRINGLITERAL  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
+ | TRUE  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
+ | FALSE  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
+ | LRB exp LRB { $$=GenerateTreeNode(S_Atom,"Atom",3,$1,$2,$3); TreeRoot = $$;}
+ | fnCallExpr  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
+ | subscriptExpr  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
+ | id  { $$=GenerateTreeNode(S_Atom,"Atom",1,$1); TreeRoot = $$;}
  ;
  
 fnCallExpr
- : id LRB LRB
- | id LRB actualList LRB
+ : id LRB LRB  { $$=GenerateTreeNode(S_FnCallExpr,"FnCallExpr",3,$1,$2,$3); TreeRoot = $$;}
+ | id LRB actualList LRB  { $$=GenerateTreeNode(S_FnCallExpr,"FnCallExpr",4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
  
 fnCallStmt
- : id LRB LRB
- | id LRB actualList LRB
+ : id LRB LRB { $$=GenerateTreeNode(S_FnCallStmt,"FnCallStmt",3,$1,$2,$3); TreeRoot = $$;}
+ | id LRB actualList LRB { $$=GenerateTreeNode(S_FnCallStmt,"FnCallStmt",4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
  
 actualList
- : exp
- | actualList ',' exp
+ : exp { $$=GenerateTreeNode(S_ActualList,"ActualList",1,$1); TreeRoot = $$;}
+ | actualList ',' exp { $$=GenerateTreeNode(S_ActualList,"ActualList",3,$1,$2,$3); TreeRoot = $$;}
  ;
  
 subscriptExpr
- : id LSB exp RSB
+ : id LSB exp RSB { $$=GenerateTreeNode(S_SubscriptExpr,"SubscriptExpr",4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
 id
- : IDENTIFIER
+ : IDENTIFIER  { $$=GenerateTreeNode(S_Id,"Id",1,$1); TreeRoot = $$;}
  ;
 %%
 int main(int argc, char **argv)
