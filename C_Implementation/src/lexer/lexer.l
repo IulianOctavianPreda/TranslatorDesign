@@ -12,6 +12,7 @@ whitespace  [:blank:]
 
 #if __has_include("../parser/parser.tab.h") 
   #include <stdlib.h>
+  #include <string.h> 
   #include "../parser/parser.tab.h"
 #endif
 
@@ -20,6 +21,7 @@ whitespace  [:blank:]
   #include "main.h"
 #endif
 
+void yyerror(char *);
 /* define yyterminate as this instead of NULL */
 #define yyterminate() return( END )
 /* output token to file*/
@@ -85,12 +87,14 @@ cout           { return(COUT); }
                   return( NEWLINE );
                 }
 {number}        {
+                  yylval.intVal = atoi(yytext);
                   return( NUMBER ); 
                 }
 
 {whitespace}    { /* skip */ }
 
 {word}          {
+                   yylval.stringVal = strdup(yytext);
                    return( STRINGLITERAL );
                 }
 
