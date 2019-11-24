@@ -49,3 +49,7 @@ C. Using Java languages without JLex/JFlex or CUP.
 D. Using Java languages with JLex/JFlex or CUP.
 
 More details in [C Minus Minus](./CMinusMinus.pdf)
+
+# User's guidelines
+
+The testing module assumes the existing folder structure will remain unchanged but offers a way to specify the path to the tests too.
