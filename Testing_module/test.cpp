@@ -2,12 +2,13 @@
 
 namespace fs = std::filesystem;
 
-bool getTestResult(std::string path, std::string filename) {
+bool getTestResult(std::string path, std::string baseFileName) {
   std::ifstream expectedFile, outputFile;
 
   std::string expectedFilename =
-      path + "/tests/expected/" + filename + ".expected";
-  std::string outputFilename = path + "/tests/output/" + filename + ".output";
+      path + "/tests/expected/" + baseFileName + ".expected";
+  std::string outputFilename =
+      path + "/tests/output/" + baseFileName + ".output";
 
   expectedFile.open(expectedFilename.c_str());
   outputFile.open(outputFilename.c_str());
@@ -30,9 +31,9 @@ bool getTestResult(std::string path, std::string filename) {
   }
 
   if (expectedTokens == outputTokens) {
-    std::cout << filename << " Passed" << std::endl;
+    std::cout << baseFileName << " Passed" << std::endl;
   } else {
-    std::cout << filename << " Failed" << std::endl;
+    std::cout << baseFileName << " Failed" << std::endl;
   }
   return expectedTokens == outputTokens;
 }
