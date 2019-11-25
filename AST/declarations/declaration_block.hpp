@@ -17,10 +17,9 @@ class DeclarationBlock {
     return 0;
   }
 
-  DeclarationBlock* Add(std::shared_ptr<VariableDeclaration> varDecl) {
+  void Add(std::shared_ptr<VariableDeclaration> varDecl) {
     assert(varDecl);
     _declarations.push_back(varDecl);
-    return this;
   }
 
   int GetSize() const { return _declarations.size(); }
