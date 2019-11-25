@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "./function_declaration.hpp"
 #include "./variable_declaration.hpp"
 
 class DeclarationBlock {
@@ -23,4 +24,6 @@ class DeclarationBlock {
   }
 
   int GetSize() const { return _declarations.size(); }
+
+  friend class FunctionDeclaration;
 };
