@@ -7,6 +7,6 @@ class ExpressionStatement : public BaseStatement {
   std::shared_ptr<BaseExpression> expression;
 
  public:
-  ExpressionStatement(std::shared_ptr<BaseExpression> _expression, )
+  ExpressionStatement(std::shared_ptr<BaseExpression> _expression)
       : expression(_expression) {}
 };
