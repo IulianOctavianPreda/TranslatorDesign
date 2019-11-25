@@ -4,7 +4,7 @@
 #include "./base/base_expression.hpp"
 #include "./declarations/function_declaration.hpp"
 
-class ParametersList {
+class ParameterList {
   std::vector<std::shared_ptr<BaseExpression>> _parameters;
 
  public:

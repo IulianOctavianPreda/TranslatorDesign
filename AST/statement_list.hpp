@@ -3,7 +3,7 @@
 #include <vector>
 #include "./base/base_statement.hpp"
 
-class StatementsList {
+class StatementList {
   std::vector<std::shared_ptr<BaseStatement>> _statements;
 
  public:

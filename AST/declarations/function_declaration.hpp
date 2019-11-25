@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "../parameters_list.hpp"
+#include "../parameter_list.hpp"
 #include "./variable_declaration.hpp"
 
 class FunctionDeclaration {
@@ -24,7 +24,7 @@ class FunctionDeclaration {
     return _parameters;
   }
 
-  int Match(std::shared_ptr<ParamList> params) {
+  int Match(std::shared_ptr<ParameterList> params) {
     if (params->GetSize() != _parameters->GetSize())
       return 0;
     else {
