@@ -4,15 +4,15 @@
 
 class OperationExpression : public BaseExpression {
  private:
-  std::shared_ptr<BaseExpression> left, right;
-  int op;
+  std::shared_ptr<BaseExpression> _left, _right;
+  int _op;
 
  public:
-  OperationExpression(int _op, std::shared_ptr<BaseExpression> _left,
-                      std::shared_ptr<BaseExpression> _right)
-      : left(_left), right(_right), op(_op) {}
+  OperationExpression(int op, std::shared_ptr<BaseExpression> left,
+                      std::shared_ptr<BaseExpression> right)
+      : _left(left), _right(right), _op(op) {}
 
   int GetType() const {
-    return getOperation(op, left->GetType(), right->GetType());
+    return getOperation(_op, _left->GetType(), _right->GetType());
   }
 };

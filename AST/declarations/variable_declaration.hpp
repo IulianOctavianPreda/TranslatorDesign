@@ -1,15 +1,15 @@
 #include <string>
 
 class VariableDeclaration {
-  std::string name;
-  int type, size;
+  std::string _name;
+  int _type, _size;
 
  public:
-  VariableDeclaration() : type(0), size(0) {}
-  VariableDeclaration(std::string _name, int _type, int _size)
-      : name(_name), type(_type), size(_size) {}
+  VariableDeclaration() : _type(0), _size(0) {}
+  VariableDeclaration(std::string name, int type, int size)
+      : _name(name), _type(type), _size(size) {}
 
-  int GetType() const { return type; }
-  int GetSize() const { return size; }
-  const std::string& GetName() const { return name; }
+  int GetType() const { return _type; }
+  int GetSize() const { return _size; }
+  const std::string& GetName() const { return _name; }
 };

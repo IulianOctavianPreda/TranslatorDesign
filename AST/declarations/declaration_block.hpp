@@ -5,12 +5,11 @@
 #include "./variable_declaration.hpp"
 
 class DeclarationBlock {
-  int space;
-  std::vector<std::shared_ptr<VariableDeclaration>> declarations;
+  std::vector<std::shared_ptr<VariableDeclaration>> _declarations;
 
  public:
   std::shared_ptr<VariableDeclaration> Find(std::string var) {
-    for (auto declaration : declarations) {
+    for (auto declaration : _declarations) {
       if (declaration->GetName() == var) {
         return declaration;
       }
@@ -20,9 +19,9 @@ class DeclarationBlock {
 
   DeclarationBlock* Add(std::shared_ptr<VariableDeclaration> varDecl) {
     assert(varDecl);
-    declarations.push_back(varDecl);
+    _declarations.push_back(varDecl);
     return this;
   }
 
-  int GetSize() const { return declarations.size(); }
+  int GetSize() const { return _declarations.size(); }
 };

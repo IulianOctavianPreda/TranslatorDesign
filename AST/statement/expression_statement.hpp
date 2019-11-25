@@ -4,9 +4,9 @@
 
 class ExpressionStatement : public BaseStatement {
  private:
-  std::shared_ptr<BaseExpression> expression;
+  std::shared_ptr<BaseExpression> _expression;
 
  public:
-  ExpressionStatement(std::shared_ptr<BaseExpression> _expression)
-      : expression(_expression) {}
+  ExpressionStatement(std::shared_ptr<BaseExpression> expression)
+      : _expression(expression) {}
 };

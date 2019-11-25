@@ -4,11 +4,11 @@
 
 class IterationStatement : public BaseStatement {
  private:
-  std::shared_ptr<BaseExpression> expression;
-  std::shared_ptr<BaseStatement> statement;
+  std::shared_ptr<BaseExpression> _expression;
+  std::shared_ptr<BaseStatement> _statement;
 
  public:
-  IterationStatement(std::shared_ptr<BaseExpression> _expression,
-                     std::shared_ptr<BaseStatement> _statement)
-      : expression(_expression), statement(_statement) {}
+  IterationStatement(std::shared_ptr<BaseExpression> expression,
+                     std::shared_ptr<BaseStatement> statement)
+      : _expression(expression), _statement(statement) {}
 };
