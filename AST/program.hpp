@@ -8,6 +8,7 @@ class Program {
   std::shared_ptr<FunctionsList> _functions;
 
  public:
-  Program(DeclarationBlock* declarations, FunctionsList* functions)
+  Program(std::shared_ptr<DeclarationBlock> declarations,
+          std::shared_ptr<FunctionsList> functions)
       : _declarations(declarations), _functions(functions) {}
 };
