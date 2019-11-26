@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 #include "./base/base_expression.hpp"
-#include "./declarations/function_declaration.hpp"
+#include "./declaration/function_declaration.hpp"
 
 class ParameterList {
   std::vector<std::shared_ptr<BaseExpression>> _parameters;

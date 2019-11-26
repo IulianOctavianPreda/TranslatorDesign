@@ -1,7 +1,7 @@
 #include <memory>
 #include "../base/base_expression.hpp"
 #include "../base/base_statement.hpp"
-#include "../declarations/declaration_block.hpp"
+#include "../declaration/declaration_block.hpp"
 #include "../statement_list.hpp"
 
 class StatementsBlock : public BaseStatement {

@@ -3,7 +3,7 @@
 #include <vector>
 #include "./function.hpp"
 
-class FunctionsList {
+class FunctionList {
   std::vector<std::shared_ptr<Function>> _functions;
 
  public:

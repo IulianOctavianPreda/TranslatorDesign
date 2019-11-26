@@ -1,7 +1,7 @@
 #include <cassert>
 #include <memory>
-#include "./declarations/function_declaration.hpp"
-#include "./statements/statements_block.hpp"
+#include "./declaration/function_declaration.hpp"
+#include "./statement/statements_block.hpp"
 
 class Function {
   std::shared_ptr<StatementsBlock> _statements;

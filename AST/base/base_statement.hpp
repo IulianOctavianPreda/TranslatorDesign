@@ -1,4 +1,4 @@
 class BaseStatement {
  public:
-  virtual ~BaseStatement() {}
+  // virtual ~BaseStatement() {}
 };
