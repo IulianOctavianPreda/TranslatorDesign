@@ -5,7 +5,16 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+typedef enum { lex_unit = 1, syn_unit } UnitType;
+
+typedef enum {
+  L_ID = 1,
+  L_TYPE,
+  L_INT,
+  L_STRING,
+  L_ANYTHINGELSE
+} Lex_Unit_Cont;
 
 typedef enum {
   S_empty = 1,
@@ -31,7 +40,9 @@ typedef enum {
 
 /* TreeNode Structure*/
 typedef struct TreeNode {
+  UnitType u_type;
   Syn_Unit_Cont s_cont;
+  Lex_Unit_Cont l_cont;
   int childnum;
   struct TreeNode** child;
   union {
@@ -39,11 +50,16 @@ typedef struct TreeNode {
     char* id_name;
     char* type_name;
     int int_value;
+    char* string_value;
+    char* anything_else_name;
   };
+  int lineno;
 } TreeNode;
 
-TreeNode* GenerateTreeNode(Syn_Unit_Cont s_cont, char* syn_name, int childnum,
-                           ...);
+TreeNode* CreateTreeNode(Lex_Unit_Cont l_cont, char* value, int lineno);
+
+TreeNode* GenerateTreeNode(Syn_Unit_Cont s_cont, char* syn_name, int lineno,
+                           int childnum, ...);
 
 void PrintBlank(int deepth);
 
