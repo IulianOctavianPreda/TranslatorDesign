@@ -38,13 +38,9 @@ yycolumn += yyleng; \
 %}
 %option nodefault
 %option noyywrap
+%option yylineno
 
 %%
-
-%{          
-   int yylval;
-%}
-        
     /* Reserved keywords*/
 
 int            { yylval.tnode = CreateTreeNode(L_TYPE, yytext, yylineno); return(INT); }
@@ -118,7 +114,7 @@ cout           { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "COUT", yylineno)
 .               { /* skip */ }
 
 <<EOF>>        {
-                yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "NOT", yylineno);
+                yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "END", yylineno);
                 return ( END );
                }
 
