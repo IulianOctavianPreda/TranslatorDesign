@@ -33,8 +33,8 @@ int yycolumn = 1;
 yylloc.first_line = yylloc.last_line = yylineno; \
 yylloc.first_column = yycolumn; \
 yylloc.last_column = yycolumn + yyleng - 1; \
-yycolumn += yyleng; \
-
+yycolumn += yyleng;
+#define YYDEBUG 1
 %}
 %option nodefault
 %option noyywrap
@@ -90,19 +90,17 @@ cout           { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "COUT", yylineno)
 
 {newline}       {
                   yycolumn = 1;
-                  return( NEWLINE );
+                  //return( NEWLINE );
                 }
 {number}        {
                   yylval.tnode = CreateTreeNode(L_INT, yytext, yylineno);
-                  // yylval.intVal = atoi(yytext);
                   return( NUMBER ); 
                 }
 
 {whitespace}    { /* skip */ }
 
-{word}          {
+\"{word}\"      {
                   yylval.tnode = CreateTreeNode(L_STRING, yytext, yylineno);
-                  //  yylval.stringVal = strdup(yytext);
                   return( STRINGLITERAL );
                 }
 

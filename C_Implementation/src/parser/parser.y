@@ -52,7 +52,7 @@ extern int yylineno;
 %token <tnode>				 IDENTIFIER 
 %token <tnode>	             NUMBER 
 %token <tnode>               STRINGLITERAL 
-%token <tnode>				 NEWLINE 
+// %token <tnode>				 NEWLINE 
 %token <tnode>               END    0     "end of file"
 
 
@@ -87,8 +87,8 @@ FnDecl
  : Type Id Parameters Block { $$=GenerateTreeNode(S_FnDecl,"FnDecl",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
 Parameters
- : LRB LRB { $$=GenerateTreeNode(S_Parameters,"Parameters",$1->lineno,2,$1,$2); TreeRoot = $$;}
- | LRB FormalsList LRB { $$=GenerateTreeNode(S_Parameters,"Parameters",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
+ : LRB RRB { $$=GenerateTreeNode(S_Parameters,"Parameters",$1->lineno,2,$1,$2); TreeRoot = $$;}
+ | LRB FormalsList RRB { $$=GenerateTreeNode(S_Parameters,"Parameters",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
  ;
 FormalsList
  : FormalDecl { $$=GenerateTreeNode(S_FormalsList,"FormalsList",$1->lineno,1,$1); TreeRoot = $$;}
