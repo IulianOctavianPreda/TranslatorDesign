@@ -150,8 +150,8 @@ Atom
  ;
  
 FnCallExpr
- : Id LRB LRB  { $$=GenerateTreeNode(S_FnCallExpr,"FnCallExpr",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
- | Id LRB ActualList LRB  { $$=GenerateTreeNode(S_FnCallExpr,"FnCallExpr",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
+ : Id LRB RRB  { $$=GenerateTreeNode(S_FnCallExpr,"FnCallExpr",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
+ | Id LRB ActualList RRB  { $$=GenerateTreeNode(S_FnCallExpr,"FnCallExpr",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
  
 FnCallStmt
