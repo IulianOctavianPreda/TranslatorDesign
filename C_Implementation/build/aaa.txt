@@ -1,5 +1,5 @@
 bool _b() {
-    int _a;
+    int aa;
 }
 
 

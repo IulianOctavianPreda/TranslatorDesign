@@ -2,7 +2,7 @@ digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
 word        {letter}+
-identifier  (_|{letter})({letter}|{digit}|_)*
+identifier  _|{letter}(_|{letter}|{digit}|_)*
 newline     [(\r\n)|(\n)]
 string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
 /* blank - space and tabs */
@@ -99,7 +99,7 @@ cout           { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "COUT", yylineno)
 
 {whitespace}    { /* skip */ }
 
-\"{word}\"      {
+{string}        {
                   yylval.tnode = CreateTreeNode(L_STRING, yytext, yylineno);
                   return( STRINGLITERAL );
                 }
