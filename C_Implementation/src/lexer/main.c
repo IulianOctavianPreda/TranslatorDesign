@@ -4,7 +4,7 @@ void printTokens(int token) { printf("%d ", token); }
 
 void saveTokensToFile(int token) { fprintf(yyout, "%d ", token); }
 
-// void saveToFile(){
+// void saveTextToFile(){
 //   fwrite( yytext, yyleng, 1, yyout);
 // }
 
@@ -14,15 +14,6 @@ void scan(void (*action)(int)) {
     (*action)(token);
   }
 }
-
-// void scanToFile(void (*action)(int)){
-//   int token;
-//   FILE* f = fopen("./test.out","w");
-//   while(token = yylex()) {
-//     saveTokensToFile(token);
-//   }
-//   fclose(f);
-// }
 
 void readFromFile(char* filename, void (*scan)(void (*action)(int)),
                   void (*action)(int)) {
@@ -89,9 +80,8 @@ void printHelpMenu() {
   printf("%s",
          "<executable> -i <filename1> <filename2> ... <filenameN> - Read from "
          "multiple files\n");
-  printf("%s", "<executable> -ap - Prints the scanned tokens to the console\n");
   printf("%s",
-         "<executable> -as <filename> - Saves the scanned tokens to the "
+         "<executable> -toFile <filename> - Saves the scanned tokens to the "
          "console\n");
 }
 
@@ -102,16 +92,6 @@ int main(int argc, char** argv) {
   } else {
     void (*action)(int) = printTokens;
     void (*scanFunction)(void (*action)(int)) = scan;
-
-    for (i = 1; i < argc; i++) {
-      if (!strcmp(argv[i], "-ap")) {
-        action = printTokens;
-      }
-      if (!strcmp(argv[i], "-as")) {
-        action = saveTokensToFile;
-        if (i < argc) yyout = fopen(argv[i + 1], "w");
-      }
-    }
     for (i = 1; i < argc; i++) {
       if (!strcmp(argv[i], "-h")) {
         printHelpMenu();
@@ -126,8 +106,24 @@ int main(int argc, char** argv) {
           (void)(*scanFunction)(*action);
         } else {
           if (j - i == 1) {
+            for (i = 1; i < argc; i++) {
+              if (!strcmp(argv[i], "-toFile")) {
+                action = saveTokensToFile;
+                if (i < argc) yyout = fopen(argv[i + 1], "w");
+              }
+            }
             readFromFile(argv[j], scanFunction, action);
           } else {
+            for (i = 1; i < argc; i++) {
+              if (!strcmp(argv[i], "-toFile")) {
+                action = saveTokensToFile;
+                if (i < argc) {
+                  fopen(argv[i + 1], "w");
+                  fclose(argv[i + 1]);
+                  yyout = fopen(argv[i + 1], "a");
+                }
+              }
+            }
             char** filenames = copy_argv(argv, i, j);
             readMultipleFiles(j - i, filenames, scanFunction, action);
           }
