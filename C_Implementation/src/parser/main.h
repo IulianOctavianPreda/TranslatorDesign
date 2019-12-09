@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../ast/ast.h"
 
-TreeNode* TreeRoot = NULL;
+TreeNode* TreeRoot;
 
 extern int yylex();
 extern int yylineno;
