@@ -1,10 +1,8 @@
 ./vscode
-lex.yy.c
-lex.yy.cc
-a.out
-testy
-test.out
 
+**/*.tab.*
+**/*.yy.*
+**/*.o
+**/*.out
+**/testy
 
-C_Implementation/src/parser/parser.tab.c
-C_Implementation/src/parser/parser.tab.h
