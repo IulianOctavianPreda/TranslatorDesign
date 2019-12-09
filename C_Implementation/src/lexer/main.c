@@ -118,8 +118,8 @@ int main(int argc, char** argv) {
               if (!strcmp(argv[i], "-toFile")) {
                 action = saveTokensToFile;
                 if (i < argc) {
-                  fopen(argv[i + 1], "w");
-                  fclose(argv[i + 1]);
+                  FILE* f = fopen(argv[i + 1], "w");
+                  fclose(f);
                   yyout = fopen(argv[i + 1], "a");
                 }
               }
