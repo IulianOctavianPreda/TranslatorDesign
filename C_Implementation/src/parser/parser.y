@@ -1,11 +1,5 @@
 %{
-#include <stdio.h>
-#include "../ast/ast.h"
-int yylex(void);
-TreeNode* TreeRoot = NULL;
-int HaveTree = 1;
-extern FILE* yyin;
-extern int yylineno;
+#include "main.h"
 %}
 
 %locations 
@@ -171,17 +165,3 @@ Id
  : IDENTIFIER  { $$=GenerateTreeNode(S_Id,"Id",$1->lineno,1,$1); TreeRoot = $$;}
  ;
 %%
-
-int main(int argc, char** argv) {
-    if( argc == 2){
-        yyin = fopen(argv[1], "r");;  
-    }
-    yyparse();
-    DisplayTree(TreeRoot,0);
-    return 0;
-}
-
-void yyerror(char *s)
-{
- fprintf(stderr, "error: %s\n", s);
-}

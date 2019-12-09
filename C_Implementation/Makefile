@@ -11,7 +11,7 @@ CXXSTD = -std=c++17
 CCFLAGS = $(CDEBUG) $(CSTD) 
 CXXFLAGS = $(CXXDEBUG) $(CXXSTD)
 
-COBJ  =  $(SOURCEPATH)/ast/ast 
+COBJ  =  $(SOURCEPATH)/ast/ast $(SOURCEPATH)/parser/main
 FILES = $(addsuffix .c, $(COBJ))
 OBJS  = $(addsuffix .o, $(COBJ))
 
@@ -27,14 +27,14 @@ CLEANLIST = $(OBJS) \
 all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
-	$(CC) $(CCFLAGS) -o $(BUILDPATH)/$(EXE) $(BUILDPATH)/parser.o $(BUILDPATH)/lexer.o $(SOURCEPATH)/ast/ast.o $(LIBS)
+	$(CC) $(CCFLAGS) -o $(BUILDPATH)/$(EXE) $(BUILDPATH)/parser.o $(BUILDPATH)/lexer.o $(SOURCEPATH)/ast/ast.o $(SOURCEPATH)/parser/main.o $(LIBS)
 	$(MAKE) clean
 
 lexer: $(SOURCEPATH)/lexer/lexer.l 
 	flex -o $(SOURCEPATH)/lexer/lex.yy.c $(SOURCEPATH)/lexer/lexer.l 
 	$(CC) $(CCFLAGS) -c $(SOURCEPATH)/lexer/lex.yy.c -o $(BUILDPATH)/lexer.o
 
-parser:  $(SOURCEPATH)/parser/parser.y
+parser:  $(SOURCEPATH)/parser/parser.y $(SOURCEPATH)/parser/main.c
 	bison -d $(SOURCEPATH)/parser/parser.y -o $(SOURCEPATH)/parser/parser.tab.c
 	$(CC) $(CCFLAGS) -c -o $(BUILDPATH)/parser.o $(SOURCEPATH)/parser/parser.tab.c
 
