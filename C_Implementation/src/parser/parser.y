@@ -55,10 +55,10 @@
 /*operator precedence*/
 %left OR_OP
 %left AND_OP
-%left GL GR LE_OP GE_OP EQ_OP NE_OP
-%right NOT
+%right GL GR LE_OP GE_OP EQ_OP NE_OP
 %left PLUS MINUS
 %left TIMES DIVIDE
+%left NOT
 %left LRB RRB LSB RSB
 
 %%
