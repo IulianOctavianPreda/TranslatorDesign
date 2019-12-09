@@ -97,3 +97,34 @@ void shownode(TreeNode* node) {
   printf("%d\n", node->l_cont);
   printf("%d\n", node->lineno);
 }
+
+void SaveTreeToFile(TreeNode* Head, int curdeepth, FILE* file) {
+  if (Head->childnum < 0) return;
+  AppendBlank(curdeepth, file);
+  if (Head->u_type == syn_unit)
+    fprintf(file, "%s (%d)\n", Head->syn_name, Head->lineno);
+  else {
+    if (Head->l_cont == L_ID)
+      fprintf(file, "ID: %s\n", Head->id_name);
+    else if (Head->l_cont == L_TYPE)
+      fprintf(file, "TYPE: %s\n", Head->type_name);
+    else if (Head->l_cont == L_INT)
+      fprintf(file, "INT: %d\n", Head->int_value);
+    else if (Head->l_cont == L_STRING)
+      fprintf(file, "STRING: %d\n", Head->string_value);
+    else
+      fprintf(file, "%s\n", Head->anything_else_name);
+  }
+
+  if (Head->childnum > 0 && Head->child[0] != NULL) {
+    int i;
+    for (i = 0; i < Head->childnum; i++) {
+      SaveTreeToFile(Head->child[i], curdeepth + 1, file);
+    }
+  }
+}
+
+void AppendBlank(int deepth, FILE* file) {
+  int temp = 0;
+  for (; temp < deepth; temp++) fprintf(file, "  ");
+}
