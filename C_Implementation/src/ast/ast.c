@@ -61,7 +61,6 @@ TreeNode* GenerateTreeNode(Syn_Unit_Cont s_cont, char* syn_name, int lineno,
 }
 
 void DisplayTree(TreeNode* Head, int curdeepth) {
-  if (Head->childnum < 0) return;
   PrintBlank(curdeepth);
   if (Head->u_type == syn_unit)
     printf("%s (%d)\n", Head->syn_name, Head->lineno);
@@ -78,6 +77,7 @@ void DisplayTree(TreeNode* Head, int curdeepth) {
       printf("%s\n", Head->anything_else_name);
   }
 
+  if (Head->childnum < 0) return;
   if (Head->childnum > 0 && Head->child[0] != NULL) {
     int i;
     for (i = 0; i < Head->childnum; i++) {
@@ -99,7 +99,6 @@ void shownode(TreeNode* node) {
 }
 
 void SaveTreeToFile(TreeNode* Head, int curdeepth, FILE* file) {
-  if (Head->childnum < 0) return;
   AppendBlank(curdeepth, file);
   if (Head->u_type == syn_unit)
     fprintf(file, "%s (%d)\n", Head->syn_name, Head->lineno);
@@ -116,6 +115,7 @@ void SaveTreeToFile(TreeNode* Head, int curdeepth, FILE* file) {
       fprintf(file, "%s\n", Head->anything_else_name);
   }
 
+  if (Head->childnum < 0) return;
   if (Head->childnum > 0 && Head->child[0] != NULL) {
     int i;
     for (i = 0; i < Head->childnum; i++) {
