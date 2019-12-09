@@ -128,3 +128,16 @@ void AppendBlank(int deepth, FILE* file) {
   int temp = 0;
   for (; temp < deepth; temp++) fprintf(file, "  ");
 }
+
+void FreeTree(TreeNode* Head) {
+  if (Head->childnum < 0) {
+    free(Head);
+    return;
+  };
+  if (Head->childnum > 0 && Head->child[0] != NULL) {
+    int i;
+    for (i = 0; i < Head->childnum; i++) {
+      FreeTree(Head->child[i]);
+    }
+  }
+}
