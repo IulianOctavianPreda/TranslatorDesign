@@ -15,6 +15,14 @@ whitespace  [:blank:]
   #include <string.h> 
   #include "../parser/parser.tab.h"
   #include "../ast/ast.h"
+
+  int yycolumn = 1;
+  #define YY_USER_ACTION \
+  yylloc.first_line = yylloc.last_line = yylineno; \
+  yylloc.first_column = yycolumn; \
+  yylloc.last_column = yycolumn + yyleng - 1; \
+  yycolumn += yyleng;
+  #define YYDEBUG 1
 #endif
 
 #if !__has_include("../parser/parser.tab.h") 
@@ -25,16 +33,6 @@ whitespace  [:blank:]
 void yyerror(char *);
 /* define yyterminate as this instead of NULL */
 #define yyterminate() return( END )
-/* output token to file*/
-#define ECHO fwrite( yytext, yyleng, 1, yyout )
-
-int yycolumn = 1;
-#define YY_USER_ACTION \
-yylloc.first_line = yylloc.last_line = yylineno; \
-yylloc.first_column = yycolumn; \
-yylloc.last_column = yycolumn + yyleng - 1; \
-yycolumn += yyleng;
-#define YYDEBUG 1
 %}
 %option nodefault
 %option noyywrap
