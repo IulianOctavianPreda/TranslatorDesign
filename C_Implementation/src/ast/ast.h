@@ -66,7 +66,7 @@ void PrintBlank(int deepth);
 
 void DisplayTree(TreeNode* Head, int curdeepth);
 
-int FreeTree(TreeNode* head);
+void FreeTree(TreeNode* head);
 
 void shownode(TreeNode* node);
 void SaveTreeToFile(TreeNode* Head, int curdeepth, FILE* file);
