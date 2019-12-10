@@ -106,13 +106,3 @@ Program (1)
               INT: 0
           SEMICOL
       RB
-Same identifier used - 'i' lines:2, 8 
-Same identifier used - '_n' lines:3, 9 
-Same identifier used - 't1' lines:4, 10 
-Same identifier used - 't2' lines:5, 11 
-Same identifier used - 'i' lines:8, 2 
-Same identifier used - '_n' lines:9, 3 
-Same identifier used - 't1' lines:10, 4 
-Same identifier used - 't2' lines:11, 5 
-Same identifier used - 'i' lines:12, 2 
-Same identifier used - '_n' lines:12, 3 
