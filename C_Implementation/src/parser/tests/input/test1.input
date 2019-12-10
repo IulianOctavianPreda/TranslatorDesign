@@ -1,0 +1,4 @@
+bool aaa() {
+    int aa;
+    bool aa;
+}

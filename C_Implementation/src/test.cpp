@@ -28,13 +28,13 @@ std::string extension(std::string filename) {
   return filename.substr(lastindex, filename.length());
 }
 
-vector<int> splitString(string str) {
-  vector<int> tokens;
+vector<std::string> splitString(string str) {
+  vector<std::string> tokens;
   std::string delimiter = " ";
   auto start = 0U;
   auto end = str.find(delimiter);
   while (end != std::string::npos) {
-    tokens.push_back(stoi(str.substr(start, end - start)));
+    tokens.push_back(str.substr(start, end - start));
     start = end + delimiter.length();
     end = str.find(delimiter, start);
   }
@@ -51,19 +51,19 @@ bool compare(string path, string filename) {
   expectedFile.open(expectedFilename.c_str());
   outputFile.open(outputFilename.c_str());
 
-  std::vector<int> expectedTokens;
-  std::vector<int> outputTokens;
+  std::vector<std::string> expectedTokens;
+  std::vector<std::string> outputTokens;
 
   string temp;
 
   while (getline(expectedFile, temp)) {
-    std::vector<int> tempVector = splitString(temp);
+    std::vector<std::string> tempVector = splitString(temp);
     expectedTokens.insert(expectedTokens.end(), tempVector.begin(),
                           tempVector.end());
   }
 
   while (getline(outputFile, temp)) {
-    std::vector<int> tempVector = splitString(temp);
+    std::vector<std::string> tempVector = splitString(temp);
     outputTokens.insert(outputTokens.end(), tempVector.begin(),
                         tempVector.end());
   }
@@ -83,6 +83,8 @@ int main(int argc, char **argv) {
         << "use -lex - to run all tests from default path '/lexer'" << endl
         << "use -lex <folder path to lexer> - to run all tests" << endl
         << "use -lex <folder path to lexer> <filename> - to run a specific test"
+
+        << "use -bison - to run all tests from default path '/parser'" << endl
         << endl;
   } else {
     std::map<std::string, std::vector<std::string>> flags;
@@ -112,8 +114,8 @@ int main(int argc, char **argv) {
           std::string filename(entry.path().filename());
           std::string basename = baseName(filename);
           std::string command = path + "/a.out -i " + path + "/tests/input/" +
-                                filename + " -as " + path + "/tests/output/" +
-                                basename + ".output";
+                                filename + " -toFile " + path +
+                                "/tests/output/" + basename + ".output";
           system(command.c_str());
           auto result = compare(path, basename);
           passedTests = result ? passedTests + 1 : passedTests;
@@ -125,8 +127,46 @@ int main(int argc, char **argv) {
         std::string filename(flags["-lex"][1]);
         std::string basename = baseName(filename);
         std::string command = path + "/a.out -i " + path + "/tests/input/" +
-                              filename + " -as " + path + "/tests/output/" +
+                              filename + " -toFile " + path + "/tests/output/" +
                               basename + ".output";
+        system(command.c_str());
+        compare(path, basename);
+      }
+    }
+
+    if (flags.find("-bison") != flags.end()) {
+      std::string path;
+      if (flags["-bison"].size() == 0 || flags["-bison"].size() == 1) {
+        if (flags["-bison"].size() == 0) {
+          path = "./parser";
+        } else {
+          path = flags["-bison"][0];
+        }
+        // run all tests from path
+        int passedTests = 0;
+        int totalTests = 0;
+        for (const auto &entry :
+             fs::directory_iterator(path + "/tests/input/")) {
+          std::string filename(entry.path().filename());
+          std::string basename = baseName(filename);
+          std::string command = path + "/../../build/C-- -i " + path +
+                                "/tests/input/" + filename + " -toFile " +
+                                path + "/tests/output/" + basename + ".output";
+          std::cout << baseName << flush;
+
+          system(command.c_str());
+          auto result = compare(path, basename);
+          passedTests = result ? passedTests + 1 : passedTests;
+          totalTests++;
+        }
+        cout << passedTests << "/" << totalTests << " Tests Passed" << endl;
+      } else {
+        // system("make");
+        std::string filename(flags["-bison"][1]);
+        std::string basename = baseName(filename);
+        std::string command = path + "/../../build/C-- -i " + path +
+                              "/tests/input/" + filename + " -toFile " + path +
+                              "/tests/output/" + basename + ".output";
         system(command.c_str());
         compare(path, basename);
       }

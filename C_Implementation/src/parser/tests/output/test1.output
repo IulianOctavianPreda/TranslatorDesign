@@ -1,0 +1,31 @@
+Program (1)
+  Program (1)
+  FnDecl (1)
+    Type (1)
+      TYPE: bool
+    Id (1)
+      ID: aaa
+    Parameters (1)
+      LRB
+      RRB
+    Block (1)
+      LB
+      DeclList (1)
+        DeclList (1)
+          DeclList (1)
+          VarDecl (2)
+            Type (2)
+              TYPE: int
+            Id (2)
+              ID: aa
+            SEMICOL
+        VarDecl (3)
+          Type (3)
+            TYPE: bool
+          Id (3)
+            ID: aa
+          SEMICOL
+      StmtList (4)
+      RB
+Same identifier used - 'aa' lines:2, 3 
+Same identifier used - 'aa' lines:3, 2 
