@@ -152,7 +152,6 @@ int main(int argc, char **argv) {
           std::string command = path + "/../../build/C-- -i " + path +
                                 "/tests/input/" + filename + " -toFile " +
                                 path + "/tests/output/" + basename + ".output";
-          std::cout << baseName << flush;
 
           system(command.c_str());
           auto result = compare(path, basename);

@@ -2,7 +2,7 @@ digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
 word        {letter}+
-identifier  _|{letter}(_|{letter}|{digit}|_)*
+identifier [\_|[:alpha:]][\_|[:alnum:]]*
 newline     [(\r\n)|(\n)]
 string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
 /* blank - space and tabs */

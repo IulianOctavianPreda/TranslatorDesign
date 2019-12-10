@@ -70,7 +70,7 @@ Program
  ;
 VarDecl
  : Type Id SEMICOL             { $$=GenerateTreeNode(S_VarDecl,"VarDecl",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
- | Type Id LSB INT RSB SEMICOL { $$=GenerateTreeNode(S_VarDecl,"VarDecl",$1->lineno,6,$1,$2,$3,$4,$5,$6); TreeRoot = $$;}
+ | Type Id LSB NUMBER RSB SEMICOL { $$=GenerateTreeNode(S_VarDecl,"VarDecl",$1->lineno,6,$1,$2,$3,$4,$5,$6); TreeRoot = $$;}
  ;
 Type
  : INT  { $$=GenerateTreeNode(S_Type,"Type",$1->lineno,1,$1); TreeRoot = $$;}
