@@ -117,6 +117,7 @@ int main(int argc, char** argv) {
       }
     }
   }
+  AnalyzeTree(TreeRoot);
   FreeTree(TreeRoot);
   return 0;
 }

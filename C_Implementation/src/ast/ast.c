@@ -141,3 +141,59 @@ void FreeTree(TreeNode* Head) {
     }
   }
 }
+
+int CountIdentifiers(TreeNode* Head) {
+  int counter = 0;
+  if (Head->childnum > 0 && Head->child[0] != NULL) {
+    int i;
+    for (i = 0; i < Head->childnum; i++) {
+      counter += CountIdentifiers(Head->child[i]);
+    }
+  }
+
+  if (Head->l_cont == L_ID) return ++counter;
+  return counter;
+}
+
+TreeNode** idNodes;
+int indexIdNodes;
+
+void GetIdentifiers(TreeNode* Head) {
+  if (Head->childnum > 0 && Head->child[0] != NULL) {
+    int i;
+    for (i = 0; i < Head->childnum; i++) {
+      GetIdentifiers(Head->child[i]);
+    }
+  }
+
+  if (Head->l_cont == L_ID) {
+    idNodes[indexIdNodes] = Head;
+    indexIdNodes++;
+  }
+}
+
+void CheckErrors(TreeNode** nodeList, int size) {
+  int i, j;
+  for (i = 0; i < size; i++) {
+    for (j = 0; j < size; j++) {
+      if (i != j && strcmp(nodeList[i]->id_name, nodeList[j]->id_name) == 0) {
+        printf("Same identifier used - '%s' lines:%d, %d \n",
+               idNodes[i]->id_name, idNodes[i]->lineno, idNodes[j]->lineno);
+        break;
+      }
+    }
+  }
+}
+
+void AnalyzeTree(TreeNode* Head) {
+  int identifiers = CountIdentifiers(Head);
+
+  idNodes = (TreeNode**)malloc(sizeof(TreeNode*) * identifiers);
+  indexIdNodes = 0;
+
+  GetIdentifiers(Head);
+
+  CheckErrors(idNodes, identifiers);
+
+  free(idNodes);
+}
