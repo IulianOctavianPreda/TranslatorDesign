@@ -72,5 +72,5 @@ void shownode(TreeNode* node);
 void SaveTreeToFile(TreeNode* Head, int curdeepth, FILE* file);
 void AppendBlank(int deepth, FILE* file);
 int CountIdentifiers(TreeNode* Head);
-void AnalyzeTree(TreeNode* Head);
+void AnalyzeTree(TreeNode* Head, FILE* f);
 #endif

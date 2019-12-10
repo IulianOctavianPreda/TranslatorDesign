@@ -172,20 +172,47 @@ void GetIdentifiers(TreeNode* Head) {
   }
 }
 
-void CheckErrors(TreeNode** nodeList, int size) {
+// void CheckErrors(TreeNode** nodeList, int size) {
+//   int i, j;
+//   for (i = 0; i < size; i++) {
+//     for (j = 0; j < size; j++) {
+//       if (i != j && strcmp(nodeList[i]->id_name, nodeList[j]->id_name) == 0)
+//       {
+//         printf("Same identifier used - '%s' lines:%d, %d \n",
+//                idNodes[i]->id_name, idNodes[i]->lineno, idNodes[j]->lineno);
+//         break;
+//       }
+//     }
+//   }
+// }
+
+void CheckErrors(TreeNode** nodeList, int size, FILE* f) {
   int i, j;
   for (i = 0; i < size; i++) {
     for (j = 0; j < size; j++) {
       if (i != j && strcmp(nodeList[i]->id_name, nodeList[j]->id_name) == 0) {
-        printf("Same identifier used - '%s' lines:%d, %d \n",
-               idNodes[i]->id_name, idNodes[i]->lineno, idNodes[j]->lineno);
+        fprintf(f, "Same identifier used - '%s' lines:%d, %d \n",
+                idNodes[i]->id_name, idNodes[i]->lineno, idNodes[j]->lineno);
         break;
       }
     }
   }
 }
 
-void AnalyzeTree(TreeNode* Head) {
+// void AnalyzeTree(TreeNode* Head) {
+//   int identifiers = CountIdentifiers(Head);
+
+//   idNodes = (TreeNode**)malloc(sizeof(TreeNode*) * identifiers);
+//   indexIdNodes = 0;
+
+//   GetIdentifiers(Head);
+
+//   CheckErrors(idNodes, identifiers);
+
+//   free(idNodes);
+// }
+
+void AnalyzeTree(TreeNode* Head, FILE* f) {
   int identifiers = CountIdentifiers(Head);
 
   idNodes = (TreeNode**)malloc(sizeof(TreeNode*) * identifiers);
@@ -193,7 +220,7 @@ void AnalyzeTree(TreeNode* Head) {
 
   GetIdentifiers(Head);
 
-  CheckErrors(idNodes, identifiers);
+  CheckErrors(idNodes, identifiers, f);
 
   free(idNodes);
 }
