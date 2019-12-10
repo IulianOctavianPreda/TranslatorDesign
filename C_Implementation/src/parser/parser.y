@@ -108,9 +108,9 @@ Stmt
  | COUT LEFT_OP Exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
  | SubscriptExpr EQ Exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
  | Id EQ Exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
- | IF LRB Exp LRB Block { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
- | IF LRB Exp LRB Block ELSE Block { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,7,$1,$2,$3,$4,$5,$6,$7); TreeRoot = $$;}
- | WHILE LRB Exp LRB Block { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
+ | IF LRB Exp RRB Block { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
+ | IF LRB Exp RRB Block ELSE Block { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,7,$1,$2,$3,$4,$5,$6,$7); TreeRoot = $$;}
+ | WHILE LRB Exp RRB Block { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
  | RETURN Exp SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
  | RETURN SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,2,$1,$2); TreeRoot = $$;}
  | FnCallStmt SEMICOL { $$=GenerateTreeNode(S_Stmt,"Stmt",$1->lineno,2,$1,$2); TreeRoot = $$;}
@@ -137,7 +137,7 @@ Atom
  | STRINGLITERAL  { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,1,$1); TreeRoot = $$;}
  | TRUE  { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,1,$1); TreeRoot = $$;}
  | FALSE  { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,1,$1); TreeRoot = $$;}
- | LRB Exp LRB { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
+ | LRB Exp RRB { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
  | FnCallExpr  { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,1,$1); TreeRoot = $$;}
  | SubscriptExpr  { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,1,$1); TreeRoot = $$;}
  | Id  { $$=GenerateTreeNode(S_Atom,"Atom",$1->lineno,1,$1); TreeRoot = $$;}
@@ -149,8 +149,8 @@ FnCallExpr
  ;
  
 FnCallStmt
- : Id LRB LRB { $$=GenerateTreeNode(S_FnCallStmt,"FnCallStmt",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
- | Id LRB ActualList LRB { $$=GenerateTreeNode(S_FnCallStmt,"FnCallStmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
+ : Id LRB RRB { $$=GenerateTreeNode(S_FnCallStmt,"FnCallStmt",$1->lineno,3,$1,$2,$3); TreeRoot = $$;}
+ | Id LRB ActualList RRB { $$=GenerateTreeNode(S_FnCallStmt,"FnCallStmt",$1->lineno,4,$1,$2,$3,$4); TreeRoot = $$;}
  ;
  
 ActualList
