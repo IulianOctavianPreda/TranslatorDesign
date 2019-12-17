@@ -119,6 +119,10 @@ int main(int argc, char** argv) {
   }
 
   AnalyzeTree(TreeRoot, yyout);
+  int nodes = countSyntaxNodes(TreeRoot);
+  initializeSymbolTable(nodes);
+  parseTree(TreeRoot);
+  printSymbolTable(nodes);
   FreeTree(TreeRoot);
   return 0;
 }
