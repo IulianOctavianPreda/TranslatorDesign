@@ -12,8 +12,8 @@ typedef struct SymbolNode {
   char* symbol_type;
 } SymbolNode;
 
-SymbolNode** SymbolTable;
-int currentNode;
+SymbolNode** SymbolTable = NULL;
+int currentNode = 0;
 
 void symbolTableInsert(char* name, char* type);
 void printSymbolTable(int nodes);

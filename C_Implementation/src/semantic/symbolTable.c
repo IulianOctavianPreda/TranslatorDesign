@@ -1,17 +1,25 @@
 #include "./symbolTable.h"
 
 void initializeSymbolTable(int nodes) {
-  currentNode - 0;
+  currentNode = 0;
   SymbolTable = (SymbolNode**)malloc(sizeof(SymbolNode*) * nodes);
   int i;
   for (i = 0; i < nodes; i++) {
-    SymbolTable[i] = (SymbolNode*)malloc(sizeof(SymbolNode) * nodes);
+    SymbolTable[i] = NULL;
   }
 }
 
 void symbolTableInsert(char* name, char* type) {
-  strcpy(SymbolTable[currentNode]->symbol_name, name);
-  strcpy(SymbolTable[currentNode]->symbol_type, type);
+  SymbolNode* node = (SymbolNode*)malloc(sizeof(SymbolNode));
+
+  char* symbolName = (char*)malloc(sizeof(name));
+  strcpy(symbolName, name);
+
+  char* symbolType = (char*)malloc(sizeof(type));
+  strcpy(symbolType, name);
+  node->symbol_name = symbolName;
+  node->symbol_type = symbolType;
+  SymbolTable[currentNode++] = node;
 }
 
 void printSymbolTable(int nodes) {
@@ -30,7 +38,7 @@ int countSyntaxNodes(TreeNode* Head) {
       counter += countSyntaxNodes(Head->child[i]);
     }
   }
-
+  // printf("%d", Head->u_type);
   if (Head->u_type == syn_unit) return ++counter;
   return counter;
 }
