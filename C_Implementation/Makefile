@@ -11,7 +11,7 @@ CXXSTD = -std=c++17
 CCFLAGS = $(CDEBUG) $(CSTD) 
 CXXFLAGS = $(CXXDEBUG) $(CXXSTD)
 
-COBJ  =  $(SOURCEPATH)/ast/ast $(SOURCEPATH)/parser/main
+COBJ  =  $(SOURCEPATH)/ast/ast $(SOURCEPATH)/semantic/symbolTable  $(SOURCEPATH)/parser/main
 FILES = $(addsuffix .c, $(COBJ))
 OBJS  = $(addsuffix .o, $(COBJ))
 
@@ -27,7 +27,7 @@ CLEANLIST = $(OBJS) \
 all:$(FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(OBJS)
-	$(CC) $(CCFLAGS) -o $(BUILDPATH)/$(EXE) $(BUILDPATH)/parser.o $(BUILDPATH)/lexer.o $(SOURCEPATH)/ast/ast.o $(SOURCEPATH)/parser/main.o $(LIBS)
+	$(CC) $(CCFLAGS) -o $(BUILDPATH)/$(EXE) $(BUILDPATH)/parser.o $(BUILDPATH)/lexer.o $(SOURCEPATH)/ast/ast.o $(SOURCEPATH)/semantic/symbolTable.o $(SOURCEPATH)/parser/main.o $(LIBS)
 	$(MAKE) clean
 
 lexer: $(SOURCEPATH)/lexer/lexer.l 

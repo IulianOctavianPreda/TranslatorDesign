@@ -21,3 +21,28 @@ void printSymbolTable(int nodes) {
            SymbolTable[i]->symbol_type);
   }
 }
+
+int countSyntaxNodes(TreeNode* Head) {
+  int counter = 0;
+  if (Head->childnum > 0) {
+    int i;
+    for (i = 0; i < Head->childnum; i++) {
+      counter += countSyntaxNodes(Head->child[i]);
+    }
+  }
+
+  if (Head->u_type == syn_unit) return ++counter;
+  return counter;
+}
+
+void parseTree(TreeNode* Head) {
+  if (Head->childnum > 0) {
+    int i;
+    for (i = 0; i < Head->childnum; i++) {
+      parseTree(Head->child[i]);
+    }
+  }
+
+  if (Head->u_type == syn_unit)
+    symbolTableInsert(Head->syn_name, Head->type_name);
+}

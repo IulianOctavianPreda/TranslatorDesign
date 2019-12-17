@@ -18,4 +18,6 @@ int currentNode;
 void symbolTableInsert(char* name, char* type);
 void printSymbolTable(int nodes);
 void initializeSymbolTable(int nodes);
+void parseTree(TreeNode* root);
+int countSyntaxNodes(TreeNode* Head);
 #endif
