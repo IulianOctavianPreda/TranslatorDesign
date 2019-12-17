@@ -41,7 +41,6 @@ TreeNode* CreateTreeNode(Lex_Unit_Cont l_cont, char* value, int lineno) {
 TreeNode* GenerateTreeNode(Syn_Unit_Cont s_cont, char* syn_name, int lineno,
                            int childnum, ...) {
   TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
-
   node->u_type = syn_unit;
   node->s_cont = s_cont;
   node->l_cont = 0;
@@ -142,31 +141,42 @@ void FreeTree(TreeNode* Head) {
   }
 }
 
-int CountIdentifiers(TreeNode* Head) {
+TreeNode** idNodes;
+int indexIdNodes;
+
+int CountIdentifiers(TreeNode* Head, TreeNode* previousNode,
+                     TreeNode* prePreviousNode, int level) {
   int counter = 0;
   if (Head->childnum > 0 && Head->child[0] != NULL) {
     int i;
     for (i = 0; i < Head->childnum; i++) {
-      counter += CountIdentifiers(Head->child[i]);
+      counter += CountIdentifiers(Head->child[i], Head, previousNode, ++level);
     }
   }
 
-  if (Head->l_cont == L_ID) return ++counter;
+  // if (Head->l_cont == L_ID &&
+  //     strcmp(prePreviousNode->syn_name, "VarDecl") == 0) {
+  //   printf("%s %s %d ", prePreviousNode->syn_name, Head->syn_name, level);
+  //   printf("%d\n", Head->l_cont);
+  // }
+
+  if (Head->l_cont == L_ID && strcmp(prePreviousNode->syn_name, "VarDecl") == 0)
+    return ++counter;
+
   return counter;
 }
 
-TreeNode** idNodes;
-int indexIdNodes;
-
-void GetIdentifiers(TreeNode* Head) {
+void GetIdentifiers(TreeNode* Head, TreeNode* previousNode,
+                    TreeNode* prePreviousNode) {
   if (Head->childnum > 0 && Head->child[0] != NULL) {
     int i;
     for (i = 0; i < Head->childnum; i++) {
-      GetIdentifiers(Head->child[i]);
+      GetIdentifiers(Head->child[i], Head, previousNode);
     }
   }
 
-  if (Head->l_cont == L_ID) {
+  if (Head->l_cont == L_ID &&
+      strcmp(prePreviousNode->syn_name, "VarDecl") == 0) {
     idNodes[indexIdNodes] = Head;
     indexIdNodes++;
   }
@@ -213,14 +223,21 @@ void CheckErrors(TreeNode** nodeList, int size, FILE* f) {
 // }
 
 void AnalyzeTree(TreeNode* Head, FILE* f) {
-  int identifiers = CountIdentifiers(Head);
+  int identifiers = CountIdentifiers(Head, NULL, NULL, 0);
+  printf("%d identifiers \n", identifiers);
 
   idNodes = (TreeNode**)malloc(sizeof(TreeNode*) * identifiers);
   indexIdNodes = 0;
 
-  GetIdentifiers(Head);
+  GetIdentifiers(Head, NULL, NULL);
 
   CheckErrors(idNodes, identifiers, f);
 
   free(idNodes);
 }
+
+// de schimbat
+// in analyzetree doar extragem nodurile din parser si le punem in alt tree (
+// asta e symbol table) dupa trebuie sa facem ce zice pe site aka error
+// checking, sa vedem ca nu exista duplicate, sa vedem ca nu sunt variabile
+// nefolosite , etc

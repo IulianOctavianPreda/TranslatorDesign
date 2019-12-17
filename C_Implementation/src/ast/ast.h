@@ -46,6 +46,7 @@ typedef struct TreeNode {
   Lex_Unit_Cont l_cont;
   int childnum;
   struct TreeNode** child;
+  // struct TreeNode* parent;
   union {
     char* syn_name;
     char* id_name;
@@ -71,6 +72,5 @@ void FreeTree(TreeNode* head);
 void shownode(TreeNode* node);
 void SaveTreeToFile(TreeNode* Head, int curdeepth, FILE* file);
 void AppendBlank(int deepth, FILE* file);
-int CountIdentifiers(TreeNode* Head);
 void AnalyzeTree(TreeNode* Head, FILE* f);
 #endif
