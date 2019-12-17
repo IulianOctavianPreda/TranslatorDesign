@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../ast/ast.h"
-#include "../semantic/symbolTable.h"
+// #include "../semantic/symbolTable.h"
 
 TreeNode* TreeRoot;
 
