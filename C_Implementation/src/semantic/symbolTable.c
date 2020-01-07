@@ -31,6 +31,16 @@ void symbolTableInsert(char* context, char* type, char* name, int line) {
   SymbolTable[currentNode++] = node;
 }
 
+int checkExistence(char* context, char* type, char* name, int line) {
+  int i;
+  for (i = 0; i < insertedNodes; i++) {
+    if (!strcmp(SymbolTable[i]->symbol_context, context) &&
+        !strcmp(SymbolTable[i]->symbol_name, name))
+      return 0;
+  }
+  return 1;
+}
+
 void printSymbolTable(int nodes) {
   int i;
   printf("\nInserted Nodes: %d\n", insertedNodes);
