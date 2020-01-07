@@ -48,15 +48,34 @@ void symbolAssigned(char* context, char* name) {
 }
 int checkExistence(char* context, char* type, char* name, int line) {
   int i;
-  for (i = 0; i < insertedNodes; i++) {
-    if (!strcmp(SymbolTable[i]->symbol_context, context) &&
-        !strcmp(SymbolTable[i]->symbol_name, name)) {
-      printf("symbol %s duplicated in context %s error on line %d and %d", name,
-             type, line, SymbolTable[i]->line);
-      return 1;
+  if (insertedNodes == 1) {
+  } else {
+    for (i = 0; i < currentNode; i++) {
+      printf("%s %s %s %d", context, type, name, line);
+      if (!strcmp(SymbolTable[i]->symbol_context, context) &&
+          !strcmp(SymbolTable[i]->symbol_name, name)) {
+        // typeError(context, type, name, line, SymbolTable[i]->line);
+        return 1;
+      }
     }
   }
   return 0;
+}
+
+char* error = "";
+void errorAppender(char* _error) { strcat(error, _error); }
+void typeError(char* context, char* type, char* name, int line, int linee) {
+  char* _error = "symbol";
+  strcat(_error, name);
+  strcat(_error, "of type");
+  strcat(_error, type);
+  strcat(_error, "duplicated in context");
+  strcat(_error, context);
+  strcat(_error, "error on line");
+  strcat(_error, line + '0');
+  strcat(_error, "and");
+  strcat(_error, linee + '0');
+  errorAppender(_error);
 }
 
 void printSymbolTable(int nodes) {
