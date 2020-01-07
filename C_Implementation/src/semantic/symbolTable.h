@@ -10,12 +10,14 @@
 typedef struct SymbolNode {
   char* symbol_name;
   char* symbol_type;
+  char* symbol_context;
+  int line;
 } SymbolNode;
 
 SymbolNode** SymbolTable = NULL;
 int currentNode = 0;
 
-void symbolTableInsert(char* name, char* type);
+void symbolTableInsert(char* context, char* type, char* name, int line);
 void printSymbolTable(int nodes);
 void initializeSymbolTable(int nodes);
 void parseTree(TreeNode* root);
