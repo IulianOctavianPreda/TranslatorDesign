@@ -13,23 +13,25 @@ void initializeSymbolTable(int nodes) {
 
 void symbolTableInsert(char* context, char* type, char* name, int line) {
   insertedNodes++;
-  SymbolNode* node = (SymbolNode*)malloc(sizeof(SymbolNode));
+  if (!checkExistence(context, type, name, line)) {
+    SymbolNode* node = (SymbolNode*)malloc(sizeof(SymbolNode));
 
-  char* symbolName = (char*)malloc(sizeof(name));
-  strcpy(symbolName, name);
+    char* symbolName = (char*)malloc(sizeof(name));
+    strcpy(symbolName, name);
 
-  char* symbolType = (char*)malloc(sizeof(type));
-  strcpy(symbolType, type);
+    char* symbolType = (char*)malloc(sizeof(type));
+    strcpy(symbolType, type);
 
-  char* symbolContext = (char*)malloc(sizeof(context));
-  strcpy(symbolContext, context);
-  node->symbol_name = symbolName;
-  node->symbol_type = symbolType;
-  node->symbol_context = symbolContext;
-  node->line = line;
-  node->isAssigned = 0;
+    char* symbolContext = (char*)malloc(sizeof(context));
+    strcpy(symbolContext, context);
+    node->symbol_name = symbolName;
+    node->symbol_type = symbolType;
+    node->symbol_context = symbolContext;
+    node->line = line;
+    node->isAssigned = 0;
 
-  SymbolTable[currentNode++] = node;
+    SymbolTable[currentNode++] = node;
+  }
 }
 
 // !strcmp(SymbolTable[i]->symbol_type, type) &&
@@ -48,10 +50,13 @@ int checkExistence(char* context, char* type, char* name, int line) {
   int i;
   for (i = 0; i < insertedNodes; i++) {
     if (!strcmp(SymbolTable[i]->symbol_context, context) &&
-        !strcmp(SymbolTable[i]->symbol_name, name))
-      return 0;
+        !strcmp(SymbolTable[i]->symbol_name, name)) {
+      printf("symbol %s duplicated in context %s error on line %d and %d", name,
+             type, line, SymbolTable[i]->line);
+      return 1;
+    }
   }
-  return 1;
+  return 0;
 }
 
 void printSymbolTable(int nodes) {
