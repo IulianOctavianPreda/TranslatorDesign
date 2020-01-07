@@ -27,7 +27,7 @@ To use the executable
     <executable> -i <filename> - Read from the file
     <executable> -i <filename1> <filename2> ... <filenameN> - Read from multiple files
     <executable> -ap - Prints the scanned tokens to the console
-    <executable> -as <filename> - Saves the scanned tokens to the console
+    <executable> -toFile <filename> - Saves the scanned tokens to the console
 
 ### Tests 
 

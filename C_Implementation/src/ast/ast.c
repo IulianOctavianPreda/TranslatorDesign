@@ -58,23 +58,24 @@ TreeNode* GenerateTreeNode(Syn_Unit_Cont s_cont, char* syn_name, int lineno,
 
   return node;
 }
-
 void DisplayTree(TreeNode* Head, int curdeepth) {
   PrintBlank(curdeepth);
-  if (Head->u_type == syn_unit)
-    printf("%s (%d)\n", Head->syn_name, Head->lineno);
-  else {
-    if (Head->l_cont == L_ID)
-      printf("ID: %s\n", Head->id_name);
-    else if (Head->l_cont == L_TYPE)
-      printf("TYPE: %s\n", Head->type_name);
-    else if (Head->l_cont == L_INT)
-      printf("INT: %d\n", Head->int_value);
-    else if (Head->l_cont == L_STRING)
-      printf("STRING: %d\n", Head->string_value);
-    else
-      printf("%s\n", Head->anything_else_name);
-  }
+  // if (Head->u_type == syn_unit)
+  //   printf("%s (%d)\n", Head->syn_name, Head->lineno);
+  // else {
+  //   if (Head->l_cont == L_ID)
+  //     printf("ID: %s\n", Head->id_name);
+  //   else if (Head->l_cont == L_TYPE)
+  //     printf("TYPE: %s\n", Head->type_name);
+  //   else if (Head->l_cont == L_INT)
+  //     printf("INT: %d\n", Head->int_value);
+  //   else if (Head->l_cont == L_STRING)
+  //     printf("STRING: %d\n", Head->string_value);
+  //   else
+  //     printf("%s\n", Head->anything_else_name);
+  // }
+  printf("%d)", curdeepth);
+  shownode(Head);
 
   if (Head->childnum < 0) return;
   if (Head->childnum > 0 && Head->child[0] != NULL) {
@@ -90,7 +91,44 @@ void PrintBlank(int deepth) {
   for (; temp < deepth; temp++) printf("  ");
 }
 
+const char* unit_type_arr[] = {"", "lex_unit", "syn_unit"};
+const char* lex_unit_arr[] = {"",      "L_ID",     "L_TYPE",
+                              "L_INT", "L_STRING", "L_ANYTHINGELSE"};
+const char* syn_unit_arr[] = {"",
+                              "S_empty",
+                              "S_Program",
+                              "S_VarDecl",
+                              "S_Type",
+                              "S_FnDecl",
+                              "S_Parameters",
+                              "S_FormalsList",
+                              "S_FormalDecl",
+                              "S_Block",
+                              "S_DeclList",
+                              "S_StmtList",
+                              "S_Stmt",
+                              "S_Exp",
+                              "S_Atom",
+                              "S_FnCallExpr",
+                              "S_FnCallStmt",
+                              "S_ActualList",
+                              "S_SubscriptExpr",
+                              "S_Id"};
+
 void shownode(TreeNode* node) {
+  printf("%s  ", unit_type_arr[node->u_type]);
+  printf("%s  ", lex_unit_arr[node->l_cont]);
+  printf("%s  ", syn_unit_arr[node->s_cont]);
+  printf("line %d ", node->lineno);
+  if (node->u_type == 2) printf("%s  ", node->syn_name);
+  // if (node->u_type == 1) {
+  //   printf("%s  ", node->type_name);
+  //   printf("%s   \n", node->anything_else_name);
+  // }
+  printf("\n");
+}
+
+void shownodeln(TreeNode* node) {
   printf("%d\n", node->u_type);
   printf("%d\n", node->s_cont);
   printf("%d\n", node->l_cont);
