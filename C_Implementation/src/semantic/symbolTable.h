@@ -12,6 +12,7 @@ typedef struct SymbolNode {
   char* symbol_type;
   char* symbol_context;
   int line;
+  int isAssigned;
 } SymbolNode;
 
 SymbolNode** SymbolTable = NULL;

@@ -27,10 +27,23 @@ void symbolTableInsert(char* context, char* type, char* name, int line) {
   node->symbol_type = symbolType;
   node->symbol_context = symbolContext;
   node->line = line;
+  node->isAssigned = 0;
 
   SymbolTable[currentNode++] = node;
 }
 
+// !strcmp(SymbolTable[i]->symbol_type, type) &&
+// SymbolTable[i]->line == line)
+// printf("symbol %s duplicated error on line %d and %d")
+void symbolAssigned(char* context, char* name) {
+  int i;
+
+  for (i = 0; i < insertedNodes; i++) {
+    if (!strcmp(SymbolTable[i]->symbol_context, context) &&
+        !strcmp(SymbolTable[i]->symbol_name, name))
+      SymbolTable[i]->isAssigned = 1;
+  }
+}
 int checkExistence(char* context, char* type, char* name, int line) {
   int i;
   for (i = 0; i < insertedNodes; i++) {
@@ -45,9 +58,10 @@ void printSymbolTable(int nodes) {
   int i;
   printf("\nInserted Nodes: %d\n", insertedNodes);
   for (i = 0; i < insertedNodes; i++) {
-    printf("Context %s \nName: %s \nType: %s \nline:%d\n\n",
+    printf("Context %s \nName: %s \nType: %s \nline:%d isAssigned:%d\n\n",
            SymbolTable[i]->symbol_context, SymbolTable[i]->symbol_name,
-           SymbolTable[i]->symbol_type, SymbolTable[i]->line);
+           SymbolTable[i]->symbol_type, SymbolTable[i]->line,
+           SymbolTable[i]->isAssigned);
   }
 }
 
@@ -67,6 +81,7 @@ int countSyntaxNodes(TreeNode* Head) {
 char context[255] = "";
 
 void parseTree(TreeNode* Head) {
+  int i;
   if (Head->u_type == syn_unit && !strcmp(Head->syn_name, "FnDecl")) {
     strcpy(context, Head->child[1]->child[0]->syn_name);
     symbolTableInsert("Global", Head->child[0]->child[0]->type_name,
@@ -78,8 +93,15 @@ void parseTree(TreeNode* Head) {
                       Head->child[1]->child[0]->syn_name,
                       Head->child[1]->child[0]->lineno);
   }
+  if (Head->u_type == syn_unit && !strcmp(Head->syn_name, "Stmt")) {
+    for (i = 0; i < Head->childnum; i++) {
+      if (Head->u_type == syn_unit && Head->child[i]->s_cont == S_Id) {
+        symbolAssigned(context, Head->child[i]->child[0]->syn_name);
+        break;
+      }
+    }
+  }
   if (Head->childnum > 0) {
-    int i;
     for (i = 0; i < Head->childnum; i++) {
       if (Head->child[i]->s_cont != S_Type && Head->child[i]->s_cont != S_Id)
         parseTree(Head->child[i]);
