@@ -118,13 +118,14 @@ int main(int argc, char** argv) {
     }
   }
 
-  AnalyzeTree(TreeRoot, yyout);
+  // AnalyzeTree(TreeRoot, yyout);
   int nodes = countSyntaxNodes(TreeRoot);
-  printf("%d \n", nodes);
+  // printf("%d \n", nodes);
 
   initializeSymbolTable(nodes);
   parseTree(TreeRoot);
   printSymbolTable(nodes);
   FreeTree(TreeRoot);
+  showError();
   return 0;
 }

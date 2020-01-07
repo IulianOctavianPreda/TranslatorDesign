@@ -1,7 +1,5 @@
 #include "./symbolTable.h"
 
-int insertedNodes = 0;
-
 void initializeSymbolTable(int nodes) {
   currentNode = 0;
   SymbolTable = (SymbolNode**)malloc(sizeof(SymbolNode*) * nodes);
@@ -12,7 +10,6 @@ void initializeSymbolTable(int nodes) {
 }
 
 void symbolTableInsert(char* context, char* type, char* name, int line) {
-  insertedNodes++;
   if (!checkExistence(context, type, name, line)) {
     SymbolNode* node = (SymbolNode*)malloc(sizeof(SymbolNode));
 
@@ -40,7 +37,7 @@ void symbolTableInsert(char* context, char* type, char* name, int line) {
 void symbolAssigned(char* context, char* name) {
   int i;
 
-  for (i = 0; i < insertedNodes; i++) {
+  for (i = 0; i < currentNode; i++) {
     if (!strcmp(SymbolTable[i]->symbol_context, context) &&
         !strcmp(SymbolTable[i]->symbol_name, name))
       SymbolTable[i]->isAssigned = 1;
@@ -48,40 +45,33 @@ void symbolAssigned(char* context, char* name) {
 }
 int checkExistence(char* context, char* type, char* name, int line) {
   int i;
-  if (insertedNodes == 1) {
-  } else {
-    for (i = 0; i < currentNode; i++) {
-      printf("%s %s %s %d", context, type, name, line);
-      if (!strcmp(SymbolTable[i]->symbol_context, context) &&
-          !strcmp(SymbolTable[i]->symbol_name, name)) {
-        // typeError(context, type, name, line, SymbolTable[i]->line);
-        return 1;
-      }
+  for (i = 0; i < currentNode; i++) {
+    // printf("%s %s %s %d", context, type, name, line);
+    if (!strcmp(SymbolTable[i]->symbol_context, context) &&
+        !strcmp(SymbolTable[i]->symbol_name, name)) {
+      typeError(context, type, name, line, SymbolTable[i]->line);
+      return 1;
     }
   }
   return 0;
 }
 
-char* error = "";
+char error[2550] = "";
 void errorAppender(char* _error) { strcat(error, _error); }
+void showError() { printf("Errors:\n %s", error); }
 void typeError(char* context, char* type, char* name, int line, int linee) {
-  char* _error = "symbol";
-  strcat(_error, name);
-  strcat(_error, "of type");
-  strcat(_error, type);
-  strcat(_error, "duplicated in context");
-  strcat(_error, context);
-  strcat(_error, "error on line");
-  strcat(_error, line + '0');
-  strcat(_error, "and");
-  strcat(_error, linee + '0');
+  char _error[2550] = "";
+  sprintf(
+      _error,
+      "symbol %s of type %s duplicated in context %s error on line %d and %d\n",
+      name, type, context, line, linee);
   errorAppender(_error);
 }
 
 void printSymbolTable(int nodes) {
   int i;
-  printf("\nInserted Nodes: %d\n", insertedNodes);
-  for (i = 0; i < insertedNodes; i++) {
+  printf("\nInserted Nodes: %d\n", currentNode);
+  for (i = 0; i < currentNode; i++) {
     printf("Context %s \nName: %s \nType: %s \nline:%d isAssigned:%d\n\n",
            SymbolTable[i]->symbol_context, SymbolTable[i]->symbol_name,
            SymbolTable[i]->symbol_type, SymbolTable[i]->line,

@@ -23,4 +23,5 @@ void printSymbolTable(int nodes);
 void initializeSymbolTable(int nodes);
 void parseTree(TreeNode* root);
 int countSyntaxNodes(TreeNode* Head);
+void showError();
 #endif
