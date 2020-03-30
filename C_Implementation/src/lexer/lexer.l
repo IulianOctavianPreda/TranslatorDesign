@@ -2,44 +2,56 @@ digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
 word        {letter}+
-identifier  (_|{letter})({letter}|{digit}|_)*
+identifier [\_|[:alpha:]][\_|[:alnum:]]*
 newline     [(\r\n)|(\n)]
 string      "((\\)|(\")|(\\\")|(\\')|(\\\')|(\\\\)|(\\n)|(\\t)|&|!|#|[a-zA-Z]|[0-9]|_)*"
 /* blank - space and tabs */
 whitespace  [:blank:]
 
 %{
-/* C string header, for string ops below */
-#include <stdlib.h>
-#include "mock_tokens.hh"
 
+#if __has_include("../parser/parser.tab.h") 
+  #include <stdlib.h>
+  #include <string.h> 
+  #include "../parser/parser.tab.h"
+  #include "../ast/ast.h"
+
+  int yycolumn = 1;
+  #define YY_USER_ACTION \
+  yylloc.first_line = yylloc.last_line = yylineno; \
+  yylloc.first_column = yycolumn; \
+  yylloc.last_column = yycolumn + yyleng - 1; \
+  yycolumn += yyleng;
+  #define YYDEBUG 1
+#endif
+
+#if !__has_include("../parser/parser.tab.h") 
+  #include "mock_tokens.hh"
+  #include "main.h"
+#endif
+
+void yyerror(char *);
 /* define yyterminate as this instead of NULL */
 #define yyterminate() return( END )
-/* output token to file*/
-#define ECHO fwrite( yytext, yyleng, 1, yyout )
 %}
 %option nodefault
 %option noyywrap
+%option yylineno
 
 %%
-
-%{          
-   int yylval;
-%}
-        
     /* Reserved keywords*/
 
-int            { return(INT); }
-bool           { return(BOOL); }
-void           { return(VOID); }
-true           { return(TRUE); }
-false          { return(FALSE); }
-if             { return(IF); }
-else           { return(ELSE); }
-while          { return(WHILE); }
-return         { return(RETURN); }
-cin            { return(CIN); }
-cout           { return(COUT); }
+int            { yylval.tnode = CreateTreeNode(L_TYPE, yytext, yylineno); return(INT); }
+bool           { yylval.tnode = CreateTreeNode(L_TYPE, yytext, yylineno);return(BOOL); }
+void           { yylval.tnode = CreateTreeNode(L_TYPE, yytext, yylineno);return(VOID); }
+true           { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "TRUE", yylineno);return(TRUE); }
+false          { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "FALSE", yylineno);return(FALSE); }
+if             { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "IF", yylineno);return(IF); }
+else           { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "ELSE", yylineno);return(ELSE); }
+while          { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "WHILE", yylineno);return(WHILE); }
+return         { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "RETURN", yylineno);return(RETURN); }
+cin            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "CIN", yylineno);return(CIN); }
+cout           { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "COUT", yylineno);return(COUT); }
 
 
   /* comments */
@@ -49,187 +61,57 @@ cout           { return(COUT); }
 
   /* special characters */
 
-\>\>            { return(RIGHT_OP); }
-\<\<            { return(LEFT_OP); }
-\&\&            { return(AND_OP); }
-\|\|            { return(OR_OP); }
-\<\=            { return(LE_OP); }
-\>\=            { return(GE_OP); }
-\=\=            { return(EQ_OP); }
-\!\=            { return(NE_OP); }
-\;              { return(SEMICOL); }
-\{              { return(LB); }
-\}              { return(RB); }
-\,              { return(COL); }
-\=              { return(EQ); }
-\(              { return(LRB); }
-\)              { return(RRB); }
-\[              { return(LSB); }
-\]              { return(RSB); }
-\-              { return(MINUS); }
-\+              { return(PLUS); }
-\*              { return(TIMES); }
-\/              { return(DIVIDE); }
-\<              { return(GL); }
-\>              { return(GR); }
+\>\>            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "RIGHT_OP", yylineno);return(RIGHT_OP); }
+\<\<            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "LEFT_OP", yylineno);return(LEFT_OP); }
+\&\&            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "AND_OP", yylineno);return(AND_OP); }
+\|\|            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "OR_OP", yylineno);return(OR_OP); }
+\<\=            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "LE_OP", yylineno);return(LE_OP); }
+\>\=            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "GE_OP", yylineno);return(GE_OP); }
+\=\=            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "EQ_OP", yylineno);return(EQ_OP); }
+\!\=            { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "NE_OP", yylineno);return(NE_OP); }
+\;              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "SEMICOL", yylineno);return(SEMICOL); }
+\{              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "LB", yylineno);return(LB); }
+\}              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "RB", yylineno);return(RB); }
+\,              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "COL", yylineno);return(COL); }
+\=              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "EQ", yylineno);return(EQ); }
+\(              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "LRB", yylineno);return(LRB); }
+\)              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "RRB", yylineno);return(RRB); }
+\[              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "LSB", yylineno);return(LSB); }
+\]              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "RSB", yylineno);return(RSB); }
+\-              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "MINUS", yylineno);return(MINUS); }
+\+              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "PLUS", yylineno);return(PLUS); }
+\*              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "TIMES", yylineno);return(TIMES); }
+\/              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "DIVIDE", yylineno);return(DIVIDE); }
+\<              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "GL", yylineno);return(GL); }
+\>              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "GR", yylineno);return(GR); }
+\!              { yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "NOT", yylineno);return(NOT); }
 
 {newline}       {
-                  return( NEWLINE );
+                  yycolumn = 1;
+                  //return( NEWLINE );
                 }
 {number}        {
+                  yylval.tnode = CreateTreeNode(L_INT, yytext, yylineno);
                   return( NUMBER ); 
                 }
 
 {whitespace}    { /* skip */ }
 
-{word}          {
-                   return( STRINGLITERAL );
+{string}        {
+                  yylval.tnode = CreateTreeNode(L_STRING, yytext, yylineno);
+                  return( STRINGLITERAL );
                 }
 
 {identifier}    {
+                  yylval.tnode = CreateTreeNode(L_ID, yytext, yylineno);
                   return( IDENTIFIER );
                 }
 
-.              { /* skip */ }
+.               { /* skip */ }
 
-<<EOF>>        {return ( END ) ;}
+<<EOF>>        {
+                yylval.tnode = CreateTreeNode(L_ANYTHINGELSE, "END", yylineno);
+                return ( END );
+               }
 
 %%
-
-void printTokens(int token){
-  printf("%d ",token);
-}
-
-void saveTokensToFile(int token){
-  fprintf(yyout,"%d ", token);
-}
-
-// void saveToFile(){
-//   fwrite( yytext, yyleng, 1, yyout);
-// }
-
-void scan(void (*action)(int)){
-  int token; 
-  while(token = yylex()) {
-    (*action)(token);
-  }
-}
-
-// void scanToFile(void (*action)(int)){
-//   int token;
-//   FILE* f = fopen("./test.out","w");
-//   while(token = yylex()) {
-//     saveTokensToFile(token);
-//   }
-//   fclose(f);
-// }
-
-void readFromFile(char* filename, void (*scan)(void (*action)(int)), void (*action)(int)){
-  // set as input stream the file opened
-  // yylex defaults to stdin if the yyin is not set
-  if(!(yyin = fopen(filename, "r"))) {
-      perror(filename);
-      return;
-  }
-  // call the scan function with the action function as parameter
-  (*scan)(*action);
-}
-
-void readMultipleFiles(int numberOfFiles, char** fileNames, void (*scan)(void (*action)(int)), void (*action)(int)){
-  int i;
-  for(i = 0; i < numberOfFiles; i++) {
-    // open file
-    printf("%s\n",fileNames[i]);
-    FILE *f = fopen(fileNames[i], "r");
-
-    if(!f) {
-      perror(fileNames[i]);
-      return;
-    }
-    // reset the lexer and set the input stream the file opened
-    yyrestart(f);
-    // call the scan function with the action function as parameter
-    (*scan)(*action);
-    fclose(f);
- }
-}
-
-char **copy_argv(char *argv[], int start, int end) {
-  // calculate the contiguous argv buffer size
-  int length=0;
-  size_t ptr_args = end - start + 1;
-  for (int i = start + 1; i < end + 1; i++)
-  {
-    length += (strlen(argv[i]) + 1);
-  }
-  char** new_argv = (char**)malloc((ptr_args) * sizeof(char*) + length);
-  // copy argv into the contiguous buffer
-  length = 0;
-  int k = 0;
-  for (int i =  start + 1; i < end + 1; i++)
-  {
-    new_argv[k] = &(((char*)new_argv)[(ptr_args * sizeof(char*)) + length]);
-    strcpy(new_argv[k], argv[i]);
-    length += (strlen(argv[i]) + 1);
-    k++;
-  }
-  // insert NULL terminating ptr at the end of the ptr array
-  new_argv[ptr_args-1] = NULL;
-  return (new_argv);
-}
-
-void printHelpMenu(){
-  printf("%s","Flags like -i -ap can be used together and are recommended to be used together\n");
-  printf("%s","The lexer defaults to print tokens to the console\n");
-  printf("%s","<executable> -h - Displays the help menu\n");
-  printf("%s","<executable> -i - Read from the console.\n");
-  printf("%s","<executable> -i <filename> - Read from the file\n");
-  printf("%s","<executable> -i <filename1> <filename2> ... <filenameN> - Read from multiple files\n");
-  printf("%s","<executable> -ap - Prints the scanned tokens to the console\n");
-  printf("%s","<executable> -as <filename> - Saves the scanned tokens to the console\n");
-}
-
-int main(int argc, char** argv){
-  int i;
-  if(argc == 1){
-    printHelpMenu();
-  }else{
-    void (*action)(int) = printTokens;
-    void (*scanFunction)(void (*action)(int)) = scan;
-
-    for (i = 1; i < argc; i++) {
-      if (!strcmp(argv[i], "-ap")) {
-        action = printTokens;
-      }
-      if (!strcmp(argv[i], "-as")) {
-        action = saveTokensToFile;
-        if(i < argc)
-        yyout = fopen(argv[i + 1],"w");
-      }
-    }
-    for (i = 1; i < argc; i++) {
-      if (!strcmp(argv[i], "-h")) {
-        printHelpMenu();
-      }
-      if (!strcmp(argv[i], "-i")) {
-        int j = i;
-        while(j + 1 < argc && strchr(argv[j + 1], '-') == NULL){
-          j++;
-        }
-        // j - i because we use 0 based index position
-        if(j - i == 0){
-          (void)(*scanFunction)(*action);
-        }else {
-          if (j - i == 1){
-            readFromFile(argv[j], scanFunction, action);
-          }else{
-            char** filenames = copy_argv(argv,i,j);
-            readMultipleFiles(j - i,filenames , scanFunction, action);
-          }
-        }
-      }
-    }
-  }
-  return 0;
-}
-

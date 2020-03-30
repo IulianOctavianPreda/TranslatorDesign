@@ -1,14 +1,10 @@
-CC    ?= gcc
-CXX   ?= g++
+CC ?= gcc
 
 CDEBUG = -g -Wall
-CXXDEBUG = -g -Wall
 
 CSTD = -std=c99
-CXXSTD = -std=c++14
 
 CCFLAGS = $(CDEBUG) $(CSTD) 
-CXXFLAGS = $(CXXDEBUG) $(CXXSTD)
 
 SOBJ = lexer
 
@@ -18,7 +14,7 @@ all:
 
 lexer: lexer.l
 	flex lexer.l 
-	$(CC) $(CCFLAGS) lex.yy.c -lfl
+	$(CC) $(CCFLAGS) main.c lex.yy.c -lfl
 
 clean:
 	rm -rf lex.yy.c

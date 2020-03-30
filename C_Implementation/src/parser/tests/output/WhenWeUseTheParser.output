@@ -1,0 +1,118 @@
+Program (1)
+  Program (1)
+  FnDecl (1)
+    Type (1)
+      TYPE: int
+    Id (1)
+      ID: main
+    Parameters (1)
+      LRB
+      RRB
+    Block (1)
+      LB
+      DeclList (1)
+        DeclList (1)
+          DeclList (1)
+            DeclList (1)
+              DeclList (1)
+                DeclList (1)
+                VarDecl (2)
+                  Type (2)
+                    TYPE: int
+                  Id (2)
+                    ID: i
+                  SEMICOL
+              VarDecl (3)
+                Type (3)
+                  TYPE: int
+                Id (3)
+                  ID: _n
+                SEMICOL
+            VarDecl (4)
+              Type (4)
+                TYPE: int
+              Id (4)
+                ID: t1
+              SEMICOL
+          VarDecl (5)
+            Type (5)
+              TYPE: int
+            Id (5)
+              ID: t2
+            SEMICOL
+        VarDecl (6)
+          Type (6)
+            TYPE: int
+          Id (6)
+            ID: nextTerm
+          SEMICOL
+      DeclList (8)
+        DeclList (8)
+          DeclList (8)
+            DeclList (8)
+              DeclList (8)
+                DeclList (8)
+                  StmtList (8)
+                  Stmt (8)
+                    Id (8)
+                      ID: i
+                    EQ
+                    Exp (8)
+                      Atom (8)
+                        INT: 1
+                    SEMICOL
+                Stmt (9)
+                  Id (9)
+                    ID: _n
+                  EQ
+                  Exp (9)
+                    Atom (9)
+                      INT: 100
+                  SEMICOL
+              Stmt (10)
+                Id (10)
+                  ID: t1
+                EQ
+                Exp (10)
+                  Atom (10)
+                    INT: 0
+                SEMICOL
+            Stmt (11)
+              Id (11)
+                ID: t2
+              EQ
+              Exp (11)
+                Atom (11)
+                  INT: 1
+              SEMICOL
+          Stmt (12)
+            WHILE
+            LRB
+            Exp (12)
+              Exp (12)
+                Atom (12)
+                  Id (12)
+                    ID: i
+              LE_OP
+              Exp (12)
+                Atom (12)
+                  Id (12)
+                    ID: _n
+            RRB
+        Stmt (18)
+          RETURN
+          Exp (18)
+            Atom (18)
+              INT: 0
+          SEMICOL
+      RB
+Same identifier used - 'i' lines:2, 8 
+Same identifier used - '_n' lines:3, 9 
+Same identifier used - 't1' lines:4, 10 
+Same identifier used - 't2' lines:5, 11 
+Same identifier used - 'i' lines:8, 2 
+Same identifier used - '_n' lines:9, 3 
+Same identifier used - 't1' lines:10, 4 
+Same identifier used - 't2' lines:11, 5 
+Same identifier used - 'i' lines:12, 2 
+Same identifier used - '_n' lines:12, 3 

@@ -1,0 +1,19 @@
+int main() {
+    int i; 
+    int _n; 
+    int t1;
+    int t2;
+    int nextTerm;
+
+    i = 1;
+    _n = 100; 
+    t1 = 0; 
+    t2 = 1;
+    while (i <= _n) {
+        nextTerm = t1 + t2;
+        t1 = t2;
+        t2 = nextTerm;
+        i = i + 1;
+    }
+    return 0;
+}

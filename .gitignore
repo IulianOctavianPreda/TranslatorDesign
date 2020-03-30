@@ -1,8 +1,6 @@
-./vscode
-lex.yy.c
-lex.yy.cc
-a.out
-testy
-test.out
-
-
+**/.vscode
+**/*.tab.*
+**/*.yy.*
+**/*.o
+**/*.out
+**/testy
